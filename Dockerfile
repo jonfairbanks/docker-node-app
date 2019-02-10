@@ -1,11 +1,10 @@
-FROM node:8
+FROM mhart/alpine-node:8
 
 # App Directory
 WORKDIR /usr/src/app
 
 # Install Dependencies
-RUN npm i yarn pm2 -g
-
+RUN npm i pm2 -g
 COPY package*.json yarn*.json ./
 RUN  yarn install
 
