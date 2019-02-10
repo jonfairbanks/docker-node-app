@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 
 # Quietly Install Dependencies
 ENV NPM_CONFIG_PREFIX=/usr/src/app/.npm-global
-COPY package*.json yarn*.json ./
+COPY package*.json yarn*.* ./
 RUN  yarn install --silent && npm i pm2 -g > "/dev/null" 2>&1
 
 # Bundle App Source
