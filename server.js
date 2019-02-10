@@ -10,7 +10,7 @@ const PORT = 8080;
 const app = express();
 
 // Middleware
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.removeHeader("X-Powered-By");
   res.setHeader('X-Timestamp', Date.now());
   res.setHeader('X-Words-of-Wisdom', '"You come at the king, you best not miss." - Omar Little');
