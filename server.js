@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 
 // Handle Requests
 app.get('/', (req, res) => {
-  res.send('Hello world!\n');
+  res.send('Hello world!\n' + 'Request:' + JSON.stringify(req.headers, null, ' '));
 });
 
 app.listen(PORT, HOST);
