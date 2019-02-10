@@ -13,4 +13,7 @@
 To boot the container: 
 `docker run -it -p 3000:8080 --name sample-app jonfairbanks/docker-node-app`
 
+To attach to a running container:
+`docker exec -it sample-app /bin/ash`
+
 This application is also available from Dockerhub under [jonfairbanks/docker-node-app](https://hub.docker.com/r/jonfairbanks/docker-node-app)
