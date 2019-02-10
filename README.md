@@ -1,6 +1,6 @@
 # docker-node-app
 
-![](https://cdn-images-1.medium.com/max/1354/1*GG896wAv82dpcXlSXJN2Jg.jpeg)
+![Docker+Node](https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/logo.jpg)
 
 #### A sample Node.js app in Docker
 
