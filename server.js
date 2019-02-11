@@ -21,10 +21,10 @@ app.use((req, res, next) => {
 // Handle Requests
 app.get('/', (req, res) => {
   res.send(
-    'Hello from' + os.hostname() + '!\n\n' + 
-    'IP:' + req.headers.x-forwarded-for + '\n\n' +
-    'User Agent:' + req.headers.user-agent + '\n\n' + 
-    'Timestamp:' + Date.now()
+    'Hello from ' + os.hostname() + '!\n\n' + 
+    'IP: ' + req.headers['x-forwarded-for'] + '\n\n' +
+    'User Agent: ' + req.headers['user-agent'] + '\n\n' + 
+    'Timestamp: ' + Date.now()
   );
 });
 
