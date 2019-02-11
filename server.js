@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const os = require('os');
 
 // Constants
 const HOST = '0.0.0.0';
@@ -19,8 +20,13 @@ app.use((req, res, next) => {
 
 // Handle Requests
 app.get('/', (req, res) => {
-  res.send('Hello world!\n' + 'Request:' + JSON.stringify(req.headers, null, ' '));
+  res.send(
+    'Hello from' + os.hostname() + '!\n\n' + 
+    'IP:' + req.headers.x-forwarded-for + '\n\n' +
+    'User Agent:' + req.headers.user-agent + '\n\n' + 
+    'Timestamp:' + Date.now()
+  );
 });
 
 app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+console.log(`Express is up and running...`);
