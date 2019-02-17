@@ -20,9 +20,13 @@ app.use((req, res, next) => {
 
 // Handle Requests
 app.get('/', (req, res) => {
+  var ip = req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     (req.connection.socket ? req.connection.socket.remoteAddress : "Unknown");
   res.send(
-    'Hello from ' + os.hostname() + '...\n\r' + 
-    'IP: ' + req.ip + '\n\r' +
+    'Hello from ' + os.hostname() + '\n\r' + 
+    'IP: ' + ip + '\n\r' +
     'User Agent: ' + req.headers['user-agent'] + '\n\r' + 
     'Timestamp: ' + Date.now() + '\n\r'
   );
