@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
      (req.connection.socket ? req.connection.socket.remoteAddress : "Unknown");
 
   var body = '<html<head><title>docker-node-app</title></head><body>' + 
-  'Hello from <b>' + os.hostname() + '</b><br/><br/>' + 
+  'Hello from <b>' + os.hostname() + '</b>!<br/><br/>' + 
   'IP: ' + ip + '<br/><br/>' +
   'User Agent: ' + req.headers['user-agent'] + '<br/><br/>' + 
   'Timestamp: ' + Date.now() + '<br/>' +
