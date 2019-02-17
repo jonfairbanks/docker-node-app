@@ -25,12 +25,17 @@ app.get('/', (req, res) => {
      req.connection.remoteAddress || 
      req.socket.remoteAddress ||
      (req.connection.socket ? req.connection.socket.remoteAddress : "Unknown");
-  res.send(
-    'Hello from ' + os.hostname() + '\n\r' + 
-    'IP: ' + ip + '\n\r' +
-    'User Agent: ' + req.headers['user-agent'] + '\n\r' + 
-    'Timestamp: ' + Date.now() + '\n\r'
-  );
+
+  var body = '<html<head><title>docker-node-app</title></head><body>' + 
+  'Hello from <b>' + os.hostname() + '</b><br/><br/>' + 
+  'IP: ' + ip + '<br/><br/>' +
+  'User Agent: ' + req.headers['user-agent'] + '<br/><br/>' + 
+  'Timestamp: ' + Date.now() + '<br/>' +
+  '</body></html>';
+
+  res.writeHead(200,{"Content-Type" : "text/html"});
+  res.write(body);
+  res.end();
 });
 
 app.listen(PORT, HOST);
