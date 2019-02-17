@@ -5,7 +5,7 @@ const os = require('os');
 
 // Constants
 const HOST = '0.0.0.0';
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 // App
 const app = express();
@@ -21,10 +21,10 @@ app.use((req, res, next) => {
 // Handle Requests
 app.get('/', (req, res) => {
   res.send(
-    'Hello from ' + os.hostname() + '!\n\r' + 
-    'IP: ' + req.headers['x-forwarded-for'] + '\n\r' +
+    'Hello from ' + os.hostname() + '...\n\r' + 
+    'IP: ' + req.ip + '\n\r' +
     'User Agent: ' + req.headers['user-agent'] + '\n\r' + 
-    'Timestamp: ' + Date.now()
+    'Timestamp: ' + Date.now() + '\n\r'
   );
 });
 
