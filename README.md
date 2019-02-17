@@ -16,4 +16,7 @@ To boot the container:
 To attach to a running container:
 `docker exec -it sample-app /bin/ash`
 
+To deploy this app into a pre-existing Kubernetes instance:
+`kubectl apply -f docker-node-app.yaml`
+
 This application is also available from Dockerhub under [jonfairbanks/docker-node-app](https://hub.docker.com/r/jonfairbanks/docker-node-app)
