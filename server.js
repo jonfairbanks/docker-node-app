@@ -14,7 +14,8 @@ const app = express();
 app.use((req, res, next) => {
   res.removeHeader("X-Powered-By");
   res.setHeader('X-Timestamp', Date.now());
-  res.setHeader('X-Words-of-Wisdom', '"You come at the king, you best not miss." - Omar Little');
+  res.setHeader('X-Hostname', os.hostname());
+  res.setHeader('X-Words-of-Wisdom', 'You come at the king, you best not miss. - Omar Little');
   next();
 });
 
