@@ -16,6 +16,9 @@ app.use((req, res, next) => {
   res.setHeader('X-Timestamp', Date.now());
   res.setHeader('X-Hostname', os.hostname());
   res.setHeader('X-Words-of-Wisdom', 'You come at the king, you best not miss. - Omar Little');
+  res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.setHeader('Expires', '-1');
+  res.setHeader('Pragma', 'no-cache');
   next();
 });
 
@@ -33,7 +36,7 @@ app.get('/', (req, res) => {
   'Timestamp: ' + Date.now() + '<br/>' +
   '</body></html>';
 
-  res.writeHead(200,{"Content-Type" : "text/html"});
+  res.writeHead(200, {'Content-Type': 'text/html'});
   res.write(body);
   res.end();
 });
