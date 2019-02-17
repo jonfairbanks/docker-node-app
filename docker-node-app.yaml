@@ -33,3 +33,4 @@ spec:
   selector:
     app: docker-node-app
   type: LoadBalancer
+  externalTrafficPolicy: Local
