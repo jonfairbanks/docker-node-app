@@ -1,16 +1,14 @@
 'use strict';
 
+// Constants
 const express = require('express');
 const os = require('os');
-
-// Constants
-const HOST = '0.0.0.0';
 const PORT = process.env.PORT || 8080;
 
-// App
+// Setup Express
 const app = express();
 
-// Middleware
+// Sample Middleware
 app.use((req, res, next) => {
   res.removeHeader("X-Powered-By");
   res.setHeader('X-Timestamp', Date.now());
@@ -22,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Handle Requests
+// Handle Incoming Requests
 app.get('/', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || 
      req.connection.remoteAddress || 
@@ -41,5 +39,5 @@ app.get('/', (req, res) => {
   res.end();
 });
 
-app.listen(PORT, HOST);
+app.listen(PORT, '0.0.0.0');
 console.log(`Express is up and running...`);
