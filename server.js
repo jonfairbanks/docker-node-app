@@ -13,7 +13,6 @@ app.use((req, res, next) => {
   res.removeHeader("X-Powered-By");
   res.setHeader('X-Timestamp', Date.now());
   res.setHeader('X-Hostname', os.hostname());
-  res.setHeader('X-Words-of-Wisdom', 'You come at the king, you best not miss. - Omar Little');
   res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
   res.setHeader('Expires', '-1');
   res.setHeader('Pragma', 'no-cache');
@@ -27,11 +26,12 @@ app.get('/', (req, res) => {
      req.socket.remoteAddress ||
      (req.connection.socket ? req.connection.socket.remoteAddress : "Unknown");
 
-  var body = '<html<head><title>docker-node-app</title></head><body>' + 
+  var body = '<html<head><meta http-equiv="refresh" content="1"><title>docker-node-app</title></head><body>' + 
   'Hello from <b>' + os.hostname() + '</b>!<br/><br/>' + 
-  'IP: ' + ip + '<br/><br/>' +
+  'Request IP: ' + ip + '<br/><br/>' +
   'User Agent: ' + req.headers['user-agent'] + '<br/><br/>' + 
-  'Timestamp: ' + Date.now() + '<br/>' +
+  'Timestamp: ' + Date.now() + '<br/><br/>' +
+  'This page will automatically reload and connect to new hosts...' +
   '</body></html>';
 
   res.writeHead(200, {'Content-Type': 'text/html'});
