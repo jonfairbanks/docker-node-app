@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Quietly Install Dependencies
 ENV NPM_CONFIG_PREFIX=/usr/src/app/.npm-global
 COPY package*.json yarn*.* ./
-RUN  yarn install --production --silent && npm i pm2 -g > "/dev/null" 2>&1
+RUN  yarn install --production --silent
 
 # Bundle App Source
 COPY . .
@@ -18,4 +18,4 @@ COPY . .
 # Internal Application Port
 EXPOSE 8080
 
-CMD [ "/usr/src/app/.npm-global/lib/node_modules/pm2/bin/pm2-runtime", "server.js" ]
+CMD [ "node", "server.js" ]
