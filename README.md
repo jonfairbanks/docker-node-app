@@ -6,7 +6,7 @@
 ![](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
 #### A sample Node.js app in Docker
 
-- Final Image Size: 134MB
+- Final Image Size: 99MB
 - Includes the latest versions of Node, NPM and Yarn
 - Runs as a non-root user with PM2
 
