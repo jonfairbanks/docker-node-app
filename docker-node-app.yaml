@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
       - name: docker-node-app
-        imagePullPolicy: Always
-        image: jonfairbanks/docker-node-app
+        image: jonfairbanks/docker-node-app:latest
         ports:
         - name: http
           containerPort: 8080
