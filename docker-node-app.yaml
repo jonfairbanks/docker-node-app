@@ -16,7 +16,7 @@ spec:
       containers:
       - name: docker-node-app
         image: jonfairbanks/docker-node-app
-        imagePullPolicy: "Always"
+        imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 8080
@@ -33,5 +33,5 @@ spec:
     targetPort: 8080
   selector:
     app: docker-node-app
-  type: LoadBalancer
+  type: NodePort
   externalTrafficPolicy: Local
