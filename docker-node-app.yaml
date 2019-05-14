@@ -12,9 +12,11 @@ spec:
       labels:
         app: docker-node-app
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
       - name: docker-node-app
-        image: jonfairbanks/docker-node-app:latest
+        image: jonfairbanks/docker-node-app
+        imagePullPolicy: "Always"
         ports:
         - name: http
           containerPort: 8080
