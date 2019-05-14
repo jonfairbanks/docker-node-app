@@ -11,8 +11,8 @@ const app = express();
 // Sample Middleware
 app.use((req, res, next) => {
   res.removeHeader("X-Powered-By");
-  res.setHeader('X-Timestamp', Date.now());
   res.setHeader('X-Hostname', os.hostname());
+  res.setHeader('X-Timestamp', Date.now());
   res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
   res.setHeader('Expires', '-1');
   res.setHeader('Pragma', 'no-cache');
@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
   'Request IP: ' + ip + '<br/><br/>' +
   'User Agent: ' + req.headers['user-agent'] + '<br/><br/>' + 
   'Timestamp: ' + Date.now() + '<br/><br/>' +
-  '<i>This page will automatically reload and connect to new hosts...</i>' +
+  'This page will automatically reload and connect to new hosts...' +
   '</body></html>';
 
   res.writeHead(200, {'Content-Type': 'text/html'});
