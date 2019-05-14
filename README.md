@@ -8,7 +8,7 @@
 
 - Final Image Size: 99MB
 - Includes the latest versions of Node, NPM and Yarn
-- Runs as a non-root user with PM2
+- Runs as a non-root user
 
 To boot the container: 
 `docker run -it -p 3000:8080 --name sample-app jonfairbanks/docker-node-app`
