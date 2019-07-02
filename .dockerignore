@@ -1,7 +1,16 @@
+    
 node_modules
+npm-debug.log
 .git
+.gitignore
 .cache
 *.md
+*.example
 LICENSE
 logo.*
-docker-node-app.yaml
+*.png
+*.gif
+*.jpg
+*.bmpr
+*.sample
+.env*
