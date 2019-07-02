@@ -2,12 +2,21 @@
   "name": "docker-node-app",
   "version": "1.0.0",
   "description": "Node.js on Docker",
+  "repository": "https://github.com/jonfairbanks/docker-node-app.git",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix"
   },
   "dependencies": {
     "express": "^4.16.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0",
+    "nodemon": "^1.19.1"
+  }
 }
