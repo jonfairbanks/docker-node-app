@@ -2,8 +2,12 @@
 
 ![Docker+Node](https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/logo.jpg)
 
-![](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg?style=flat)
-![](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/jonfairbanks/docker-node-app.svg)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/jonfairbanks/docker-node-app.svg)
+![GitHub top language](https://img.shields.io/github/languages/top/jonfairbanks/docker-node-app.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/docker-node-app.svg)
+![License](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
 #### A sample Node.js app in Docker
 
 - Final Image Size: 99MB
