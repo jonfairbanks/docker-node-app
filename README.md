@@ -10,9 +10,13 @@
 ![License](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
 #### A sample Node.js app in Docker
 
-- Final Image Size: 99MB
+- Final Image Size: 61MB
 - Includes the latest versions of Node, NPM and Yarn
 - Runs as a non-root user
+- Multi-stage including development, test, audit and production environments
+- Enforces code styling via ESLint & Airbnb styling
+- Scan and audit dependencies with [Microscanner](https://www.aquasec.com/news/microscanner-new-free-image-vulnerability-scanner-for-developers/)
+- Properly handles `SIGINT` and `SIGTERM` events with [tini](https://github.com/krallin/tini)
 
 To boot the container: 
 `docker run -it -p 3000:8080 --name sample-app jonfairbanks/docker-node-app`
