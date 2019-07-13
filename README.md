@@ -19,7 +19,7 @@
 - Properly handles `SIGINT` and `SIGTERM` events with [tini](https://github.com/krallin/tini)
 - Follows many development, virtualization and styling best-practices
 
-###### Docker
+##### Docker
 
 This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
 
@@ -29,7 +29,7 @@ To launch the container:
 To attach to a running container:
 `docker exec -it docker-node-app /bin/ash`
 
-###### Kubernetes
+##### Kubernetes
 
 This application can also be helpful verifying Kubernetes:
 - Scaling and Downtime Mitigation
