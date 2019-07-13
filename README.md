@@ -8,23 +8,33 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/docker-node-app.svg)
 ![License](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
+
 #### A sample Node.js app in Docker
 
 - Final Image Size: 61MB
 - Includes the latest versions of Node, NPM and Yarn
-- Runs as a non-root user
+- Runs as a non-root user for enhanced security
 - Multi-stage including development, test, audit and production environments
-- Enforces code styling via ESLint & Airbnb styling
 - Scan and audit dependencies with [Microscanner](https://www.aquasec.com/news/microscanner-new-free-image-vulnerability-scanner-for-developers/)
 - Properly handles `SIGINT` and `SIGTERM` events with [tini](https://github.com/krallin/tini)
+- Follows many development, virtualization and styling best-practices
 
-To boot the container: 
-`docker run -it -p 3000:8080 --name sample-app jonfairbanks/docker-node-app`
+###### Docker
+
+This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
+
+To launch the container: 
+`docker run -it -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app`
 
 To attach to a running container:
-`docker exec -it sample-app /bin/ash`
+`docker exec -it docker-node-app /bin/ash`
 
-To deploy this app into a pre-existing Kubernetes instance:
+###### Kubernetes
+
+This application can also be helpful verifying Kubernetes:
+- Scaling and Downtime Mitigation
+- Cluster Load Balancing
+- Request IP Passthrough
+
+To deploy this app into a pre-existing cluster, simply run:
 `kubectl apply -f docker-node-app.yaml`
-
-This application is also available from Dockerhub under [jonfairbanks/docker-node-app](https://hub.docker.com/r/jonfairbanks/docker-node-app)
