@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
   + `Request IP: ${ip}<br/><br/>`
   + `User Agent: ${req.headers['user-agent']}<br/><br/>`
   + `Timestamp: ${Date.now()}<br/><br/>`
-  + 'This page will automatically reload and connect to new hosts...'
+  + 'This page will reload automatically and connect to new hosts...'
   + '</body></html>';
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
