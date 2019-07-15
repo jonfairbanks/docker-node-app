@@ -37,5 +37,7 @@ app.get('/', (req, res) => {
   res.end();
 });
 
+
+// Launch the app
 app.listen(PORT, '0.0.0.0');
 console.log(`Express is up and running...`); // eslint-disable-line
