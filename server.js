@@ -19,7 +19,6 @@ app.use((req, res, next) => {
 
 // Handle Incoming Requests
 app.get('/', (req, res) => {
-  console.log(req.headers); // eslint-disable-line
   const ip = req.headers['x-forwarded-for']
      || req.connection.remoteAddress
      || req.socket.remoteAddress
