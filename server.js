@@ -19,10 +19,11 @@ app.use((req, res, next) => {
 
 // Handle Incoming Requests
 app.get('/', (req, res) => {
-  const ip = req.headers['x-forwarded-for']
-     || req.connection.remoteAddress
-     || req.socket.remoteAddress
-     || (req.connection.socket ? req.connection.socket.remoteAddress : 'Unknown');
+  const ip = req.headers['x-client-ip']
+  || req.headers['x-forwarded-for']
+  || req.connection.remoteAddress
+  || req.socket.remoteAddress
+  || (req.connection.socket ? req.connection.socket.remoteAddress : 'Unknown');
 
   const body = `${'<html<head><meta http-equiv="refresh" content="3"><title>docker-node-app</title></head><body>'
   + 'Hello from <b>'}${os.hostname()}</b>!<br/><br/>`
