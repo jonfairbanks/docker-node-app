@@ -1,6 +1,7 @@
 // Constants
 const express = require('express');
 const os = require('os');
+const moment = require('moment');
 
 // Setup Express
 const PORT = process.env.PORT || 8080;
@@ -24,11 +25,15 @@ app.get('/', (req, res) => {
      || req.socket.remoteAddress
      || (req.connection.socket ? req.connection.socket.remoteAddress : 'Unknown');
 
-  const body = `${'<html<head><meta http-equiv="refresh" content="3"><title>docker-node-app</title></head><body>'
+  const body = `${'<html><head>'
+  + '<link rel="shortcut icon" href="https://yo.fairbanks.io/dna-favicon"/>'
+  + '<meta http-equiv="refresh" content="3">'
+  + '<title>docker-node-app</title>'
+  + '</head><body>'
   + 'Hello from <b>'}${os.hostname()}</b>!<br/><br/>`
   + `Request IP: ${ip}<br/><br/>`
   + `User Agent: ${req.headers['user-agent']}<br/><br/>`
-  + `Timestamp: ${Date.now()}<br/><br/>`
+  + `Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')} PT<br/><br/>`
   + 'This page will automatically reload and connect to new hosts...'
   + '</body></html>';
 
@@ -39,4 +44,4 @@ app.get('/', (req, res) => {
 
 // Launch the App
 app.listen(PORT, '0.0.0.0');
-console.log(`Express is up and running...`); // eslint-disable-line
+console.log(`docker-node-app is up and running...`); // eslint-disable-line
