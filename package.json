@@ -10,7 +10,8 @@
     "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "moment": "^2.24.0"
   },
   "license": "MIT",
   "devDependencies": {
