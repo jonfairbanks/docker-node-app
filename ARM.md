@@ -35,11 +35,10 @@ cat /proc/sys/fs/binfmt_misc/qemu-aarch64
 
 Create a builder instance:
 ```
-docker buildx create --name dna-builder && docker buildx use dna-builder
-docker buildx inspect --bootstrap
+docker buildx create --name dna-builder && docker buildx use dna-builder && docker buildx inspect --bootstrap
 ```
 
-Finally, build for each architecture and push to Dockerhub:
+Finally, build for each architecture and push to Dockerhub (this may take several minutes):
 ```
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t jonfairbanks/docker-node-app:buildx . --push
 ```
@@ -52,4 +51,13 @@ docker buildx imagetools inspect jonfairbanks/docker-node-app:buildx
 This build can then be pulled and ran on any platform using the specified tag:
 ```
 docker run -it -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:buildx
+```
+
+###### Known Issues
+
+After rebooting your system and attempting a new buildx build, you may get an error that one of your platforms is not supported/enabled. This easiest fix is to just remove and replace the buildx environment:
+```
+docker buildx ls
+docker buildx rm default dna-builder
+docker buildx create --name dna-builder && docker buildx use dna-builder && docker buildx inspect --bootstrap
 ```
