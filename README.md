@@ -24,7 +24,7 @@
 This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
 
 To launch the container: 
-`docker run -it -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app`
+`docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app`
 
 To attach to a running container:
 `docker exec -it docker-node-app /bin/ash`
@@ -42,7 +42,7 @@ To deploy this app into a pre-existing cluster, simply run:
 For testing that pods are balancing correctly, you can make multiple requests to your app to verify.
 
 To make 50 requests and write them to a file, you can run the following with your endpoint:
-`for run in {1..50}; do curl -w "\n" -I https://kube.fairbanks.dev | grep X-Hostname >> docker-node-app.log; done`
+`for run in {1..50}; do curl -w "\n" -I https://kube.fairbanks.dev | grep -Fi X-Hostname >> docker-node-app.log; done`
 
 ##### ARM Support
 

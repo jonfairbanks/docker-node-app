@@ -1,10 +1,11 @@
+### ARM Support
+
 This application also has an experimental `jonfairbanks/docker-node-app:buildx` tag which supports both x86 and ARM based platforms. This was created using Docker v19's BuildKit using the following setup to create a multi-platform build on a fresh Ubuntu 18.04 host:
 
-If Docker is already installed on your host, uninstall it first.
+Note -- If Docker is already installed on your host, uninstall it first: `sudo apt-get purge docker-ce -y`
 
 First, download and install the test branch of Docker:
 ```
-sudo apt-get purge docker-ce -y
 curl -fsSL test.docker.com -o get-docker.sh && sh get-docker.sh
 ```
 
@@ -50,10 +51,10 @@ docker buildx imagetools inspect jonfairbanks/docker-node-app:buildx
 
 This build can then be pulled and ran on any platform using the specified tag:
 ```
-docker run -it -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:buildx
+docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:buildx
 ```
 
-###### Known Issues
+#### Known Issues
 
 After rebooting your system and attempting a new buildx build, you may get an error that one of your platforms is not supported/enabled. This easiest fix is to just remove and replace the buildx environment:
 ```
