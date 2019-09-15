@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
   + 'Hello from <b>'}${os.hostname()}</b>!<br/><br/>`
   + `Request IP: ${ip}<br/><br/>`
   + `User Agent: ${req.headers['user-agent']}<br/><br/>`
-  + `Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')} PT<br/><br/>`
+  + `Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')}<br/><br/>`
   + 'This page will automatically reload and connect to new hosts...'
   + '</body></html>';
 
