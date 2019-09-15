@@ -24,7 +24,7 @@
 This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
 
 To launch the container: 
-`docker run -it -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app`
+`docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app`
 
 To attach to a running container:
 `docker exec -it docker-node-app /bin/ash`
