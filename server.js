@@ -160,7 +160,7 @@ app.get('/', (req, res) => {
 });
 
 // Handle livenessProbe
-router.get("/healthz", (req,res) => {
+app.get('/healthz', (req,res) => {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   res.send({ response: {msg:"I am alive", host: os.hostname(), clientSourceIP: ip}}).status(200);
 });
