@@ -25,17 +25,132 @@ app.get('/', (req, res) => {
      || req.socket.remoteAddress
      || (req.connection.socket ? req.connection.socket.remoteAddress : 'Unknown');
 
-  const body = `${'<html><head>'
-  + '<link rel="shortcut icon" href="https://yo.fairbanks.io/dna-favicon"/>'
-  + '<meta http-equiv="refresh" content="3">'
-  + '<title>docker-node-app</title>'
-  + '</head><body>'
-  + 'Hello from <b>'}${os.hostname()}</b>!<br/><br/>`
-  + `Request IP: ${ip}<br/><br/>`
-  + `User Agent: ${req.headers['user-agent']}<br/><br/>`
-  + `Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')}<br/><br/>`
-  + 'This page will automatically reload and connect to new hosts...'
-  + '</body></html>';
+  const body = `
+    <html>
+      <head>
+        <link rel="shortcut icon" href="https://yo.fairbanks.io/dna-favicon"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+        <meta http-equiv="refresh" content="5"><title>docker-node-app</title>
+      </head>
+      <style>
+        #body {
+            background-color: #DEF1F9;
+            font-family: 'Lato', sans-serif;
+        }
+
+        #container {
+            max-width: 500px;
+            margin: auto;
+            padding-top: 10px;
+        }
+
+        #img {
+            display:block;
+            margin:auto;
+        }
+
+        #content {
+            display:block;
+            margin:auto;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: inherit;
+            border-spacing: 0 25px;
+            text-align: center;
+        }
+
+        .spinner {
+            margin: 2px auto;
+            width: 20px;
+            height: 20px;
+            position: relative;
+        }
+
+        .cube1, .cube2 {
+            background-color: #333;
+            width: 7px;
+            height: 7px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            
+            -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
+            animation: sk-cubemove 1.8s infinite ease-in-out;
+        }
+
+        .cube2 {
+            -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s;
+        }
+
+        @-webkit-keyframes sk-cubemove {
+            25% { -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5) }
+            50% { -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg) }
+            75% { -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5) }
+            100% { -webkit-transform: rotate(-360deg) }
+        }
+
+        @keyframes sk-cubemove {
+            25% { 
+                transform: translateX(21px) rotate(-90deg) scale(0.5);
+                -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5);
+            } 50% { 
+                transform: translateX(21px) translateY(21px) rotate(-179deg);
+                -webkit-transform: translateX(21px) translateY(21px) rotate(-179deg);
+            } 50.1% { 
+                transform: translateX(21px) translateY(21px) rotate(-180deg);
+                -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg);
+            } 75% { 
+                transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
+                -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
+            } 100% { 
+                transform: rotate(-360deg);
+                -webkit-transform: rotate(-360deg);
+            }
+        }
+      </style>
+      <body id="body">
+        <div id="container">
+          <img id="img" src="https://yo.fairbanks.io/dna-icon" height=175vh>
+          <div id="content">
+            <table>
+              <tr>
+                <td>
+                  Hello from <b>${os.hostname()}</b>!
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Request IP: ${ip}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  User Agent: ${req.headers['user-agent']}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  This page will automatically reload and connect to new hosts...
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write(body);

@@ -29,13 +29,13 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
         readinessProbe:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 3
             periodSeconds: 3
 ---
 apiVersion: v1
