@@ -12,5 +12,6 @@ logo.*
 *.gif
 *.jpg
 *.bmpr
+*.svg
 *.sample
 .env*

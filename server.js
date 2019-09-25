@@ -113,7 +113,9 @@ app.get('/', (req, res) => {
       </style>
       <body id="body">
         <div id="container">
-          <img id="img" src="https://yo.fairbanks.io/dna-icon" height=175vh>
+          <a href="https://github.com/jonfairbanks/docker-node-app" target="_blank" rel="noopener noreferrer">
+            <img id="img" src="https://yo.fairbanks.io/dna-icon" height=175vh>
+          </a>
           <div id="content">
             <table>
               <tr>
