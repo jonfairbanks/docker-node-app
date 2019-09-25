@@ -42,6 +42,11 @@ app.get('/', (req, res) => {
   res.end();
 });
 
+// Handle livenessProbe
+app.get('/healthz', (res) => {
+  res.sendStatus(200);
+});
+
 // Launch the App
 app.listen(PORT, '0.0.0.0');
 console.log(`docker-node-app is up and running...`); // eslint-disable-line
