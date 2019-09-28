@@ -58,18 +58,20 @@ app.get('/', (req, res) => {
 
         table {
           border-collapse: inherit;
-          border-spacing: 0 30px;
+          border-spacing: 0 28px;
           text-align: center;
         }
 
         span {
-          font-size: 16px
+          font-size: 17px;
         }
         
         sub {
           vertical-align: sub;
           font-size: 12px;
-          font-weight: 900
+          font-weight: 900;
+          display: inline-block;
+          padding-top: 5px;
         }
 
         .spinner {
@@ -131,7 +133,7 @@ app.get('/', (req, res) => {
             <table>
               <tr>
                 <td>
-                  <span style="font-size: 18px;">Hello from <b>${os.hostname()}</b>!</span>
+                  <span style="font-size: 20px;">Hello from <b>${os.hostname()}</b>!</span>
                 </td>
               </tr>
               <tr>
@@ -157,7 +159,7 @@ app.get('/', (req, res) => {
               </tr>
               <tr>
                 <td>
-                  <span>This page will automatically reload and connect to new hosts...</span>
+                  <span style="font-size: 13px;">This page will automatically reload and connect to new hosts...</span>
                 </td>
               </tr>
             </table>
