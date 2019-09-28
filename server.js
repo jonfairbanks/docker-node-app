@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   const body = `
     <html>
       <head>
-        <link rel="shortcut icon" href="https://yo.fairbanks.io/dna-favicon"/>
+        <link rel="shortcut icon" href="https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/images/favicon.png"/>
         <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
         <meta http-equiv="refresh" content="5"><title>docker-node-app</title>
       </head>
