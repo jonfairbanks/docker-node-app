@@ -58,7 +58,7 @@ app.get('/', (req, res) => {
 
         table {
           border-collapse: inherit;
-          border-spacing: 0 30px;
+          border-spacing: 0 28px;
           text-align: center;
         }
 
