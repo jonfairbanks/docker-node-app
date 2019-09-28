@@ -63,13 +63,15 @@ app.get('/', (req, res) => {
         }
 
         span {
-          font-size: 16px
+          font-size: 16px;
         }
         
         sub {
           vertical-align: sub;
           font-size: 12px;
-          font-weight: 900
+          font-weight: 900;
+          display: inline-block;
+          padding-top: 5px;
         }
 
         .spinner {
