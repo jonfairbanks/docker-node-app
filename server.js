@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
         }
 
         span {
-          font-size: 16px;
+          font-size: 17px;
         }
         
         sub {
@@ -133,7 +133,7 @@ app.get('/', (req, res) => {
             <table>
               <tr>
                 <td>
-                  <span style="font-size: 18px;">Hello from <b>${os.hostname()}</b>!</span>
+                  <span style="font-size: 20px;">Hello from <b>${os.hostname()}</b>!</span>
                 </td>
               </tr>
               <tr>
@@ -159,7 +159,7 @@ app.get('/', (req, res) => {
               </tr>
               <tr>
                 <td>
-                  <span>This page will automatically reload and connect to new hosts...</span>
+                  <span style="font-size: 13px;">This page will automatically reload and connect to new hosts...</span>
                 </td>
               </tr>
             </table>
