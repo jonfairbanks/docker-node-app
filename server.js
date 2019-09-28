@@ -34,81 +34,92 @@ app.get('/', (req, res) => {
       </head>
       <style>
         #body {
-            background-color: #DEF1F9;
-            font-family: 'Lato', sans-serif;
+          background-color: #DEF1F9;
+          font-family: 'Lato', sans-serif;
         }
 
         #container {
-            max-width: 500px;
-            margin: auto;
-            padding-top: 10px;
+          max-width: 500px;
+          margin: auto;
+          padding-top: 20px;
         }
 
         #img {
-            display:block;
-            margin:auto;
+          display:block;
+          margin:auto;
+          padding-bottom: 5px;
         }
 
         #content {
-            display:block;
-            margin:auto;
-            text-align: center;
+          display:block;
+          margin:auto;
+          text-align: center;
         }
 
         table {
-            border-collapse: inherit;
-            border-spacing: 0 25px;
-            text-align: center;
+          border-collapse: inherit;
+          border-spacing: 0 30px;
+          text-align: center;
+        }
+
+        span {
+          font-size: 16px
+        }
+        
+        sub {
+          vertical-align: sub;
+          font-size: 12px;
+          font-weight: 900
         }
 
         .spinner {
-            margin: 2px auto;
-            width: 20px;
-            height: 20px;
-            position: relative;
+          margin: 2px auto;
+          width: 20px;
+          height: 20px;
+          position: relative;
         }
 
         .cube1, .cube2 {
-            background-color: #333;
-            width: 7px;
-            height: 7px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            
-            -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
-            animation: sk-cubemove 1.8s infinite ease-in-out;
+          background-color: #333;
+          width: 7px;
+          height: 7px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          
+          -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
+          animation: sk-cubemove 1.8s infinite ease-in-out;
         }
 
         .cube2 {
-            -webkit-animation-delay: -0.9s;
-            animation-delay: -0.9s;
+          -webkit-animation-delay: -0.9s;
+          animation-delay: -0.9s;
         }
 
         @-webkit-keyframes sk-cubemove {
-            25% { -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5) }
-            50% { -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg) }
-            75% { -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5) }
-            100% { -webkit-transform: rotate(-360deg) }
+          25% { -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5) }
+          50% { -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg) }
+          75% { -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5) }
+          100% { -webkit-transform: rotate(-360deg) }
         }
 
         @keyframes sk-cubemove {
-            25% { 
-                transform: translateX(21px) rotate(-90deg) scale(0.5);
-                -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5);
-            } 50% { 
-                transform: translateX(21px) translateY(21px) rotate(-179deg);
-                -webkit-transform: translateX(21px) translateY(21px) rotate(-179deg);
-            } 50.1% { 
-                transform: translateX(21px) translateY(21px) rotate(-180deg);
-                -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg);
-            } 75% {
-                transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
-                -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
-            } 100% { 
-                transform: rotate(-360deg);
-                -webkit-transform: rotate(-360deg);
-            }
+          25% { 
+              transform: translateX(21px) rotate(-90deg) scale(0.5);
+              -webkit-transform: translateX(21px) rotate(-90deg) scale(0.5);
+          } 50% { 
+              transform: translateX(21px) translateY(21px) rotate(-179deg);
+              -webkit-transform: translateX(21px) translateY(21px) rotate(-179deg);
+          } 50.1% { 
+              transform: translateX(21px) translateY(21px) rotate(-180deg);
+              -webkit-transform: translateX(21px) translateY(21px) rotate(-180deg);
+          } 75% {
+              transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
+              -webkit-transform: translateX(0px) translateY(21px) rotate(-270deg) scale(0.5);
+          } 100% { 
+              transform: rotate(-360deg);
+              -webkit-transform: rotate(-360deg);
+          }
         }
       </style>
       <body id="body">
@@ -120,27 +131,33 @@ app.get('/', (req, res) => {
             <table>
               <tr>
                 <td>
-                  Hello from <b>${os.hostname()}</b>!
+                  <span style="font-size: 18px;">Hello from <b>${os.hostname()}</b>!</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                  Request IP: ${ip}
+                  <span>${ip}</span>
+                  <br/>
+                  <sub>Request IP</sub>
                 </td>
               </tr>
               <tr>
                 <td>
-                  User Agent: ${req.headers['user-agent']}
+                  <span>${req.headers['user-agent']}</span>
+                  <br/>
+                  <sub>User Agent</sub>
                 </td>
               </tr>
               <tr>
                 <td>
-                  Timestamp: ${moment().format('MMM Do YYYY, h:mm:ss A')}
+                  <span>${moment().format('MMM Do YYYY, h:mm:ss A')}</span>
+                  <br/>
+                  <sub>Timestamp</sub>
                 </td>
               </tr>
               <tr>
                 <td>
-                  This page will automatically reload and connect to new hosts...
+                  <span>This page will automatically reload and connect to new hosts...</span>
                 </td>
               </tr>
             </table>
