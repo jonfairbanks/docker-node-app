@@ -29,8 +29,9 @@ app.get('/', (req, res) => {
     <html>
       <head>
         <link rel="shortcut icon" href="https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/images/favicon.png"/>
-        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-        <meta http-equiv="refresh" content="5"><title>docker-node-app</title>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <meta http-equiv="refresh" content="5">
+        <title>docker-node-app</title>
       </head>
       <style>
         #body {
