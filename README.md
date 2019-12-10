@@ -11,7 +11,7 @@
 
 #### A sample Node.js app in Docker
 
-- Final Image Size: 61MB
+- Final Image Size: ~55MB
 - Includes the latest versions of Node, NPM and Yarn
 - Runs as a non-root user for enhanced security
 - Multi-stage including development, test, audit and production environments
