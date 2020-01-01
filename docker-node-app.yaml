@@ -44,7 +44,7 @@ spec:
     targetPort: 8080
   selector:
     app: docker-node-app
-  type: NodePort
+  type: LoadBalancer
   externalTrafficPolicy: Local
 ---
 apiVersion: extensions/v1beta1
