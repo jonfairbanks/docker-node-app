@@ -2,6 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docker-node-app
+  annotations:
+    keel.sh/approvals: '1'
+    keel.sh/policy: all
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/trigger: poll
 spec:
   replicas: 3
   selector:
