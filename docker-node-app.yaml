@@ -1,15 +1,14 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: docker-node-app
----
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docker-node-app
-  namespace: docker-node-app
+  annotations:
+    keel.sh/approvals: '1'
+    keel.sh/policy: all
+    keel.sh/pollSchedule: "@every 10m"
+    keel.sh/trigger: poll
 spec:
-  replicas: 20
+  replicas: 3
   selector:
     matchLabels:
       app: docker-node-app
@@ -37,12 +36,14 @@ spec:
               port: 8080
             initialDelaySeconds: 3
             periodSeconds: 3
+        resources:
+          requests:
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: docker-node-app
-  namespace: docker-node-app
 spec:
   ports:
   - name: http
@@ -51,14 +52,13 @@ spec:
     targetPort: 8080
   selector:
     app: docker-node-app
-  type: NodePort
+  type: LoadBalancer
   externalTrafficPolicy: Local
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: docker-node-app
-  namespace: docker-node-app
   annotations:
     kubernetes.io/ingress.class: "nginx"
     certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
@@ -76,3 +76,16 @@ spec:
         backend:
           serviceName: docker-node-app
           servicePort: 80
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: docker-node-app
+spec:
+  maxReplicas: 10
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: docker-node-app
+  targetCPUUtilizationPercentage: 10
