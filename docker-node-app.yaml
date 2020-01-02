@@ -31,6 +31,9 @@ spec:
               port: 8080
             initialDelaySeconds: 3
             periodSeconds: 3
+        resources:
+          requests:
+            cpu: 100m
 ---
 apiVersion: v1
 kind: Service
@@ -68,3 +71,16 @@ spec:
         backend:
           serviceName: docker-node-app
           servicePort: 80
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: docker-node-app
+spec:
+  maxReplicas: 10
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: docker-node-app
+  targetCPUUtilizationPercentage: 10
