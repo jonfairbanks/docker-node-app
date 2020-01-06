@@ -1,7 +1,7 @@
 // Constants
 const express = require('express');
 const os = require('os');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 // Setup Express
 const PORT = process.env.PORT || 8080;
@@ -153,7 +153,7 @@ app.get('/', (req, res) => {
               </tr>
               <tr>
                 <td>
-                  <span>${moment().format('MMM Do YYYY, h:mm:ss A')}</span>
+                  <span>${moment().tz(process.env.TZ || "America/Los_Angeles").format('MMM Do YYYY, h:mm:ss A')}</span>
                   <br/>
                   <sub>Timestamp</sub>
                 </td>
