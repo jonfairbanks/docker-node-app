@@ -153,7 +153,7 @@ app.get('/', (req, res) => {
               </tr>
               <tr>
                 <td>
-                  <span>${moment().tz(process.env.TZ || "America/Los_Angeles").format('MMM Do YYYY, h:mm:ss A')}</span>
+                  <span>${moment().tz(process.env.TZ || 'America/Los_Angeles').format('MMM Do YYYY, h:mm:ss A')}</span>
                   <br/>
                   <sub>Timestamp</sub>
                 </td>
