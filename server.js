@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
           padding-top: 20px;
         }
 
-        #img {
+        #logo {
           display:block;
           margin:auto;
           padding-bottom: 5px;
