@@ -134,7 +134,7 @@ app.get('/', (req, res) => {
             <table>
               <tr>
                 <td>
-                  <span style="font-size: 20px;">Hello from <b>${os.hostname()}</b>!</span>
+                  <span style="font-size: 20px;">Hello from <b id='hostname'>${os.hostname()}</b>!</span>
                 </td>
               </tr>
               <tr>
