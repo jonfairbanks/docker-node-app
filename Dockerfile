@@ -1,5 +1,6 @@
 # Base
 FROM node:12-slim as base
+RUN apt-get update; apt-get install wget gpg -y
 ENV NODE_ENV=production
 RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
     export TINI_VERSION='0.18.0'; \
