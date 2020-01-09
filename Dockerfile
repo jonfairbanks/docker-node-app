@@ -12,6 +12,8 @@ RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
 	gpgconf --kill all; \
 	rm -r "$GNUPGHOME" /usr/local/bin/tini.asc; \
 	chmod +x /usr/local/bin/tini;
+RUN apt-get purge wget gpg -y; apt-get autoremove -y; apt-get autoclean; rm -rf /var/lib/{apt,dpkg,cache,log}/
+# apt-get is unavailable after this point
 EXPOSE 3000
 RUN mkdir /app && chown -R node:node /app
 WORKDIR /app
