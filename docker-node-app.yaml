@@ -104,4 +104,4 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: docker-node-app
-  targetCPUUtilizationPercentage: 10
+  targetCPUUtilizationPercentage: 5
