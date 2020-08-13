@@ -32,6 +32,8 @@ To attach to a running container:
 
 ##### Kubernetes
 
+You can find this app on [Helm](https://jonfairbanks.github.io/helm-charts/)!
+
 This application can also be helpful verifying Kubernetes:
 - Scaling and Downtime Mitigation
 - Cluster Load Balancing
