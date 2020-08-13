@@ -11,7 +11,7 @@ pipeline {
         sh 'npm install'
       }
     }
-    
+
     stage('Test') {
       parallel {
         stage('Lint') {
