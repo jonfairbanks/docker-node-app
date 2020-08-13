@@ -8,12 +8,6 @@ pipeline {
   stages {
     stage('Test') {
       parallel {
-        stage('Install') {
-          steps {
-            sh 'npm install'
-          }
-        }
-
         stage('Lint') {
           steps {
             sh 'npm run lint'
@@ -29,24 +23,26 @@ pipeline {
       }
     }
 
-    stage('Audit') {
+    stage('NPM Audit') {
       parallel {
-        stage('Audit') {
-          steps {
-            echo 'Running Code Audit'
-          }
-        }
-
         stage('NPM Audit') {
           steps {
             sh 'npm audit --audit-level critical'
           }
         }
 
+        stage('MicroScanner') {
+          steps {
+            sh 'curl https://get.aquasec.com/microscanner --output /microscanner'
+            sh 'chmod +x /microscanner'
+            sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
+          }
+        }
+
       }
     }
 
-    stage('') {
+    stage('Confirm') {
       steps {
         echo 'Looks good to me'
       }
