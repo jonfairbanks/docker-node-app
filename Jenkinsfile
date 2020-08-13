@@ -29,7 +29,7 @@ pipeline {
       }
     }
 
-    stage('NPM Audit') {
+    stage('Audit') {
       parallel {
         stage('NPM Audit') {
           steps {
