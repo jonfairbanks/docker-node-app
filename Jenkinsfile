@@ -2,6 +2,7 @@ pipeline {
   agent {
     docker {
       image 'node:12-alpine'
+      args 'MICROSCANNER_TOKEN=asdf123'
     }
 
   }
@@ -40,8 +41,6 @@ pipeline {
         stage('MicroScanner') {
           steps {
             sh 'wget https://get.aquasec.com/microscanner'
-            sh 'pwd'
-            sh 'ls'
             sh 'chmod +x microscanner'
             sh './microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
