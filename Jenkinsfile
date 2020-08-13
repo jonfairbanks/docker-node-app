@@ -34,12 +34,6 @@ pipeline {
         }
 
         stage('MicroScanner') {
-          agent {
-            docker {
-              image 'node:12-alpine'
-            }
-
-          }
           steps {
             sh 'wget https://get.aquasec.com/microscanner'
             sh 'chmod +x /microscanner'
