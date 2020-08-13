@@ -39,8 +39,9 @@ pipeline {
 
         stage('MicroScanner') {
           steps {
-            sh 'wget -O /microscanner https://get.aquasec.com/microscanner'
-            sh 'chmod +x /microscanner'
+            sh 'wget https://get.aquasec.com/microscanner'
+            sh 'pwd'
+            sh 'chmod +x microscanner'
             sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
         }
