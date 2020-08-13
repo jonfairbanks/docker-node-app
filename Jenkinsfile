@@ -10,7 +10,7 @@ pipeline {
     stage('Test') {
       steps {
         sh 'npm install'
-        sh 'eslint .'
+        sh 'npm run lint'
         sh 'npm test'
       }
     }
