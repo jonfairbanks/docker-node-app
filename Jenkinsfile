@@ -34,9 +34,14 @@ pipeline {
         }
 
         stage('MicroScanner') {
+          agent {
+            docker {
+              image 'alpine:latest'
+            }
+
+          }
           steps {
-            sh 'sudo apt-get install curl -y'
-            sh 'curl https://get.aquasec.com/microscanner --output /microscanner'
+            sh 'wget https://get.aquasec.com/microscanner'
             sh 'chmod +x /microscanner'
             sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
