@@ -1,23 +1,56 @@
 pipeline {
   agent {
     docker {
-      image 'node:12-slim'
-      args '-p 3000:3000'
+      image 'node:12-alpine'
     }
 
   }
   stages {
-    stage('Test') {
+    stage('Install') {
       steps {
         sh 'npm install'
-        sh 'npm run lint'
-        sh 'npm test'
+      }
+    }
+
+    stage('Test') {
+      parallel {
+        stage('Lint') {
+          steps {
+            sh 'npm run lint'
+          }
+        }
+
+        stage('NPM Test') {
+          steps {
+            sh 'npm test'
+          }
+        }
+
       }
     }
 
     stage('Audit') {
+      parallel {
+        stage('NPM Audit') {
+          steps {
+            sh 'npm audit --audit-level critical'
+          }
+        }
+
+        stage('MicroScanner') {
+          steps {
+            sh 'wget https://get.aquasec.com/microscanner'
+            sh 'chmod +x microscanner'
+            sh './microscanner $MICROSCANNER_TOKEN --continue-on-failure'
+          }
+        }
+
+      }
+    }
+
+    stage('Confirm') {
       steps {
-        sh 'npm audit --audit-level critical'
+        echo 'Looks good to me'
       }
     }
 
