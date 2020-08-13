@@ -43,7 +43,7 @@ pipeline {
             sh 'pwd'
             sh 'ls'
             sh 'chmod +x microscanner'
-            sh 'microscanner $MICROSCANNER_TOKEN --continue-on-failure'
+            sh './microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
         }
 
