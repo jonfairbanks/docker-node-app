@@ -41,6 +41,7 @@ pipeline {
           steps {
             sh 'wget https://get.aquasec.com/microscanner'
             sh 'pwd'
+            sh 'ls'
             sh 'chmod +x microscanner'
             sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
