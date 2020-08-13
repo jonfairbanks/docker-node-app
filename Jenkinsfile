@@ -35,6 +35,7 @@ pipeline {
 
         stage('MicroScanner') {
           steps {
+            sh 'apt-get install curl'
             sh 'curl https://get.aquasec.com/microscanner --output /microscanner'
             sh 'chmod +x /microscanner'
             sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
