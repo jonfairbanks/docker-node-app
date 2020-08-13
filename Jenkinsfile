@@ -6,6 +6,12 @@ pipeline {
 
   }
   stages {
+    stage('Install') {
+      steps {
+        sh 'npm install'
+      }
+    }
+    
     stage('Test') {
       parallel {
         stage('Lint') {
@@ -47,12 +53,6 @@ pipeline {
     stage('Confirm') {
       steps {
         echo 'Looks good to me'
-      }
-    }
-
-    stage('Install') {
-      steps {
-        sh 'npm install'
       }
     }
 
