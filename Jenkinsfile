@@ -16,14 +16,12 @@ pipeline {
       parallel {
         stage('Lint') {
           steps {
-            sh 'npm install'
             sh 'npm run lint'
           }
         }
 
         stage('NPM Test') {
           steps {
-            sh 'npm install'
             sh 'npm test'
           }
         }
@@ -41,9 +39,9 @@ pipeline {
 
         stage('MicroScanner') {
           steps {
-            sh 'wget https://get.aquasec.com/microscanner'
-            sh 'chmod +x microscanner'
-            sh 'microscanner $MICROSCANNER_TOKEN --continue-on-failure'
+            sh 'wget -O /microscanner https://get.aquasec.com/microscanner'
+            sh 'chmod +x /microscanner'
+            sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
           }
         }
 
