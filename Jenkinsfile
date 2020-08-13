@@ -2,6 +2,7 @@ pipeline {
   agent {
     docker {
       image 'node:12-slim'
+      args 'MICROSCANNER_TOKEN'
     }
 
   }
@@ -35,7 +36,7 @@ pipeline {
 
         stage('MicroScanner') {
           steps {
-            sh 'apt-get install curl'
+            sh 'sudo apt-get install curl -y'
             sh 'curl https://get.aquasec.com/microscanner --output /microscanner'
             sh 'chmod +x /microscanner'
             sh '/microscanner $MICROSCANNER_TOKEN --continue-on-failure'
