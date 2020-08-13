@@ -10,6 +10,14 @@ pipeline {
     stage('Test') {
       steps {
         sh 'npm install'
+        sh 'eslint .'
+        sh 'npm test'
+      }
+    }
+
+    stage('Audit') {
+      steps {
+        sh 'npm audit --audit-level critical'
       }
     }
 
