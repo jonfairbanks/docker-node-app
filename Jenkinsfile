@@ -2,22 +2,53 @@ pipeline {
   agent {
     docker {
       image 'node:12-slim'
-      args '-p 3000:3000'
     }
 
   }
   stages {
     stage('Test') {
-      steps {
-        sh 'npm install'
-        sh 'npm run lint'
-        sh 'npm test'
+      parallel {
+        stage('Install') {
+          steps {
+            sh 'npm install'
+          }
+        }
+
+        stage('Lint') {
+          steps {
+            sh 'npm run lint'
+          }
+        }
+
+        stage('Test') {
+          steps {
+            sh 'npm test'
+          }
+        }
+
       }
     }
 
     stage('Audit') {
+      parallel {
+        stage('Audit') {
+          steps {
+            echo 'Running Code Audit'
+          }
+        }
+
+        stage('NPM Audit') {
+          steps {
+            sh 'npm audit --audit-level critical'
+          }
+        }
+
+      }
+    }
+
+    stage('') {
       steps {
-        sh 'npm audit --audit-level critical'
+        echo 'Looks good to me'
       }
     }
 
