@@ -10,6 +10,7 @@ pipeline {
       parallel {
         stage('Lint') {
           steps {
+            sh 'npm install'
             sh 'npm run lint'
           }
         }
