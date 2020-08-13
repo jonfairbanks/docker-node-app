@@ -15,7 +15,7 @@ pipeline {
           }
         }
 
-        stage('Test') {
+        stage('NPM Test') {
           steps {
             sh 'npm install'
             sh 'npm test'
@@ -36,7 +36,7 @@ pipeline {
         stage('MicroScanner') {
           agent {
             docker {
-              image 'alpine:latest'
+              image 'node:12-alpine'
             }
 
           }
