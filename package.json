@@ -13,11 +13,19 @@
     "dayjs": "^1.8.36",
     "express": "^4.16.1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-fix",
+      "pre-push": "(git-branch-is master && npm version minor || (git-branch-is dev && npm --no-git-tag-version version patch)"
+    }
+  },
   "license": "MIT",
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.22.0",
+    "git-branch-is": "^4.0.0",
+    "husky": "^4.3.0",
     "nodemon": "^2.0.4"
   }
 }
