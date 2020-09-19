@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 // Sample Middleware
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.removeHeader('X-Powered-By');
   res.setHeader('X-Hostname', os.hostname());
   res.setHeader('X-Timestamp', Date.now());
