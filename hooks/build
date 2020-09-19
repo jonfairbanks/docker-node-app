@@ -6,4 +6,5 @@ echo $DOCKER_TAG
 if [ $DOCKER_TAG == "latest" ]
 then
     docker tag $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
+    docker push $DOCKER_REPO:$PACKAGE_VERSION
 fi
