@@ -1,6 +1,6 @@
 # Base
 FROM node:12-slim as base
-RUN apt-get update; apt-get install wget gpg -y
+RUN apt-get -qq update; apt-get -qq install wget gpg -y
 ENV NODE_ENV=production
 RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
     export TINI_VERSION='0.18.0'; \
@@ -12,7 +12,7 @@ RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
 	gpgconf --kill all; \
 	rm -r "$GNUPGHOME" /usr/local/bin/tini.asc; \
 	chmod +x /usr/local/bin/tini;
-RUN apt-get purge wget gpg -y; apt-get autoremove -y; apt-get autoclean; rm -rf /var/lib/{apt,dpkg,cache,log}/
+RUN apt-get -qq purge wget gpg -y; apt-get -qq autoremove -y; apt-get -qq autoclean; rm -rf /var/lib/{apt,dpkg,cache,log}/
 # apt-get is unavailable after this point
 EXPOSE 3000
 RUN mkdir /app && chown -R node:node /app
