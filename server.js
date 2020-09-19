@@ -1,14 +1,17 @@
 // Constants
 const express = require('express');
 const os = require('os');
-const moment = require('moment-timezone');
+const dayjs = require('dayjs');
+const advancedFormat = require('dayjs/plugin/advancedFormat');
+
+dayjs.extend(advancedFormat);
 
 // Setup Express
 const PORT = process.env.PORT || 8080;
 const app = express();
 
 // Sample Middleware
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.removeHeader('X-Powered-By');
   res.setHeader('X-Hostname', os.hostname());
   res.setHeader('X-Timestamp', Date.now());
@@ -153,7 +156,7 @@ app.get('/', (req, res) => {
               </tr>
               <tr>
                 <td>
-                  <span id='timestamp'>${moment().tz(process.env.TZ || 'America/Los_Angeles').format('MMM Do YYYY, h:mm:ss A')}</span>
+                  <span id='timestamp'>${dayjs().format('MMM Do YYYY, h:mm:ss A')}</span>
                   <br/>
                   <sub>Timestamp</sub>
                 </td>
@@ -181,9 +184,8 @@ app.get('/', (req, res) => {
 
 // Handle livenessProbe
 app.get('/healthz', (req, res) => {
-  const ip = req.headers['x-forwarded-for']
-      || req.connection.remoteAddress;
-  res.send({ response: { msg: 'I am alive', host: os.hostname(), clientSourceIP: ip } }).status(200);
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  res.send({ response: { msg: 'docker-node-app is up and running...', host: os.hostname(), clientSourceIP: ip } }).status(200);
 });
 
 // Launch the App

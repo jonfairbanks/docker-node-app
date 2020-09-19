@@ -10,8 +10,8 @@
     "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix"
   },
   "dependencies": {
-    "express": "^4.16.1",
-    "moment-timezone": "^0.5.27"
+    "dayjs": "^1.8.36",
+    "express": "^4.16.1"
   },
   "license": "MIT",
   "devDependencies": {
