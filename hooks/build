@@ -2,4 +2,8 @@
 
 PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
 docker build -t $IMAGE_NAME --build-arg MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN .
-docker tag $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
+echo $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
+if [ $DOCKER_TAG == "latest"]
+then
+    docker tag $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
+fi
