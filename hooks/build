@@ -2,7 +2,6 @@
 
 PACKAGE_VERSION=$(grep version package.json | awk -F \" '{print $4}')
 docker build -t $IMAGE_NAME --build-arg MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN .
-echo $DOCKER_TAG
 if [ $DOCKER_TAG == "latest" ]
 then
     docker tag $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
