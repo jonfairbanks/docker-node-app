@@ -15,7 +15,8 @@
   },
   "husky": {
     "hooks": {
-      "post-merge": "(git-branch-is master && npm version minor || (git-branch-is dev && npm --no-git-tag-version version patch)"
+      "pre-commit": "npm run lint-fix",
+      "pre-push": "(git-branch-is master && npm version minor || (git-branch-is dev && npm --no-git-tag-version version patch)"
     }
   },
   "license": "MIT",
