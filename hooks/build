@@ -1,4 +1,4 @@
 #!/bin/bash
 
 PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
-docker build -t $IMAGE_NAME:$PACKAGE_VERSION --build-arg MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN .
+docker build -t $DOCKER_REPO:$PACKAGE_VERSION --build-arg MICROSCANNER_TOKEN=$MICROSCANNER_TOKEN .
