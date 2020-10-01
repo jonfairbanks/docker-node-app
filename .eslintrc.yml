@@ -9,9 +9,6 @@ rules:
       identifiers: true
       lang: en_US
       skipWords:
-      - req
-      - res
-      - msg
       - healthz
       - dayjs
       - Pragma
@@ -20,4 +17,4 @@ rules:
       skipIfMatch:
       - http://[^s]*
       - "^[-\\w]+/[-\\w\\.]+$"
-      minLength: 3
+      minLength: 5
