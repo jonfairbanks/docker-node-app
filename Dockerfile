@@ -38,7 +38,7 @@ ENV NODE_ENV=development
 ENV PATH=/app/node_modules/.bin:$PATH
 COPY --from=dev /app/node_modules /app/node_modules
 RUN eslint .
-# RUN npm test // Disabled pending unit tests
+RUN npm test
 
 # Audit ENV
 FROM test as audit
