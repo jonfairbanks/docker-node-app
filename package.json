@@ -23,7 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-spellcheck": "0.0.17",
     "git-branch-is": "^4.0.0",
