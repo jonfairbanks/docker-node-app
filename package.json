@@ -1,6 +1,6 @@
 {
   "name": "docker-node-app",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Node.js on Docker",
   "repository": "https://github.com/jonfairbanks/docker-node-app.git",
   "main": "server.js",
@@ -11,7 +11,7 @@
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
-    "dayjs": "^1.8.36",
+    "dayjs": "^1.10.4",
     "express": "^4.16.1"
   },
   "husky": {
@@ -24,7 +24,7 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-spellcheck": "0.0.17",
     "git-branch-is": "^4.0.0",
     "husky": "^6.0.0",

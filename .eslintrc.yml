@@ -14,6 +14,7 @@ rules:
       - Pragma
       - liveness
       - revalidate
+      - supertest
       skipIfMatch:
       - http://[^s]*
       - "^[-\\w]+/[-\\w\\.]+$"
