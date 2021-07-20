@@ -11,7 +11,7 @@ jobs:
       - name: Check Out Repo 
         uses: actions/checkout@v2
         
-      - name: Prepare
+      - name: Tag Images
       id: prep
       run: |
           DOCKER_IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/${DOCKER_IMAGE}
@@ -48,8 +48,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-node-app:latest
-          ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           
