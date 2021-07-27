@@ -69,6 +69,6 @@ jobs:
           release_name: Docker Release v${{ steps.prep.outputs.VERSION }}
           body: |
             The latest version(s) can be launched with:
-              - `docker run -d -p 3000:3000 --name docker-node-app jonfairbanks/docker-node-app:${{ steps.prep.outputs.VERSION }} --restart=always`
+              - `docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:${{ steps.prep.outputs.VERSION }} --restart=always`
           draft: false
           prerelease: false
