@@ -19,7 +19,8 @@ app.use((_req, res, next) => {
 
 // Handle Incoming Requests
 app.get('/', (req, res) => {
-    const ip = req.headers['x-forwarded-for']
+    const ip = req.headers['x-original-forwarded-for']
+       || req.headers['x-forwarded-for']
        || req.connection.remoteAddress
        || req.socket.remoteAddress
        || (req.connection.socket ? req.connection.socket.remoteAddress : 'Unknown');
