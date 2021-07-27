@@ -1,6 +1,6 @@
 {
   "name": "docker-node-app",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Node.js on Docker",
   "repository": "https://github.com/jonfairbanks/docker-node-app.git",
   "main": "server.js",
