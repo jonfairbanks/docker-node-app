@@ -24,5 +24,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: export TERM=xterm
     - run: npm ci
     - run: npm test
