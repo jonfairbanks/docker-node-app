@@ -8,7 +8,7 @@
     "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix",
-    "test": "jest --detectOpenHandles --watchAll"
+    "test": "clear && jest --detectOpenHandles --watchAll"
   },
   "dependencies": {
     "dayjs": "^1.10.4",
