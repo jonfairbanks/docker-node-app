@@ -1,0 +1,63 @@
+<html>
+    <head>
+      <link rel="shortcut icon" href="/images/favicon.png"/>
+      <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+      <link href="/css/index.css" type="text/css" rel="stylesheet">
+      <meta http-equiv="refresh" content="5">
+      <title>docker-node-app</title>
+    </head>
+    <body id="body">
+      <div id="container">
+        <a href="https://github.com/jonfairbanks/docker-node-app" target="_blank" rel="noopener noreferrer" id='repoLink'>
+          <img id="logo" src="/images/icon.svg" height=175vh>
+        </a>
+        <div id="content">
+          <table>
+            <tr>
+              <td>
+                <% if (hostname) { %>
+                  <span style="font-size: 20px;">Hello from <b id='hostname'><%= hostname %></b>!</span>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <% if (ip) { %>
+                  <span id='request-ip'><%= ip %></span>
+                  <br/>
+                  <sub>Request IP</sub>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <% if (user_agent) { %>
+                  <span id='user-agent'><%= user_agent %></span>
+                  <br/>
+                  <sub>User Agent</sub>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <% if (timestamp) { %>
+                  <span id='timestamp'><%= timestamp %></span>
+                  <br/>
+                  <sub>Timestamp</sub>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span style="font-size: 13px;">This page will automatically reload and connect to new hosts...</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="spinner">
+          <div class="cube1"></div>
+          <div class="cube2"></div>
+        </div>
+      </div>
+    </body>
+  </html>
