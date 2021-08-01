@@ -92,6 +92,6 @@ jobs:
         uses: bsord/helm-push@v2
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
-          repository-url: ${{ secrets.OCI_REPO_URL }} 
+          repository-url: https://ghcr.io/${{ github.repository }}
           force: true
-          chart-folder: docker-node-app
+          chart-folder: chart
