@@ -3,9 +3,9 @@
   "version": "2.0.10",
   "description": "Node.js on Docker",
   "repository": "https://github.com/jonfairbanks/docker-node-app.git",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix",
     "test": "jest --detectOpenHandles"
