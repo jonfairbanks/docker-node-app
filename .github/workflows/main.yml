@@ -30,7 +30,7 @@ jobs:
         with:
           message: "v${{ steps.update-version.outputs.version }}"
           tag: "${{ steps.get-version.outputs.version }}"
-          push: "origin main --force"
+          push: "origin master --force"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
