@@ -1,6 +1,9 @@
 name: Node.js CI
 
 on:
+  push:
+    branches: 
+      - '*'
   pull_request:
     branches:
       - '*'
@@ -25,8 +28,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Run NPM CI 
-        run: npm ci
+      - name: Run NPM Install
+        run: npm install
 
       - name: Run NPM Tests
         run: npm test
