@@ -88,10 +88,12 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Push Helm chart
-        uses: bsord/helm-push@v2
+      - name: Push Helm Chart
+        uses: bsord/helm-push@v4
         with:
+          useOCIRegistry: true
+          registry-url:  https://ghcr.io/${{ github.repository }}
+          username: jonfairbanks
           access-token: ${{ secrets.GITHUB_TOKEN }}
-          repository-url: https://ghcr.io/${{ github.repository }}
           force: true
           chart-folder: chart
