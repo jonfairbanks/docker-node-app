@@ -1,4 +1,4 @@
-name: Create Releases
+name: Create Release(s)
 
 on:
   push:
@@ -9,7 +9,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+
       - name: Check Out Repo 
         uses: actions/checkout@v2
 
@@ -88,7 +94,7 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Push Helm Chart
+      - name: Push Helm Chart to Github Container Registry
         uses: bsord/helm-push@v4
         with:
           useOCIRegistry: true
@@ -97,3 +103,19 @@ jobs:
           access-token: ${{ secrets.GITHUB_TOKEN }}
           force: true
           chart-folder: chart
+
+      - name: Push Helm Chart to DigitalOcean Container Registry
+        uses: bsord/helm-push@v4
+        with:
+          useOCIRegistry: true
+          registry-url:  https://registry.digitalocean.com/fairbanks-io
+          username: jonfairbanks
+          access-token: ${{ secrets.DIGITAL_OCEAN_REGISTRY_TOKEN }}
+          force: true
+          chart-folder: chart
+
+      - uses: act10ns/slack@v1
+        with: 
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: always()
