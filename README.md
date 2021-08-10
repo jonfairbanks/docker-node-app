@@ -24,7 +24,7 @@
 
 This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
 
-To launch the container: 
+To launch the container:
 `docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:latest`
 
 To attach to a running container:
@@ -35,6 +35,7 @@ To attach to a running container:
 You can find this app on [Helm](https://jonfairbanks.github.io/helm-charts/)!
 
 This application can also be helpful verifying Kubernetes:
+
 - Scaling and Downtime Mitigation
 - Cluster Load Balancing
 - Request IP Passthrough
@@ -46,4 +47,4 @@ To make 50 requests and write them to a file, you can run the following with you
 
 ### ARM Support
 
-This application also has an experimental `jonfairbanks/docker-node-app:buildx` tag which supports both x86 and ARM based platforms. For more details, checkout the [ARM Documentation](https://github.com/jonfairbanks/docker-node-app/blob/master/ARM.md).
+This application also has an experimental `jonfairbanks/docker-node-app:buildx` tag which supports both x86 and ARM based platforms. For more details, checkout the [ARM Documentation](/docs/ARM.md).
