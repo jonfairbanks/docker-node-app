@@ -110,7 +110,7 @@ jobs:
         uses: bsord/helm-push@v4
         with:
           useOCIRegistry: true
-          registry-url: https://registry.digitalocean.com/fairbanks-io
+          registry-url: https://registry.digitalocean.com/fairbanks-io/docker-node-app
           username: ${{ secrets.DIGITAL_OCEAN_REGISTRY_TOKEN }}
           access-token: ${{ secrets.DIGITAL_OCEAN_REGISTRY_TOKEN }}
           force: true
