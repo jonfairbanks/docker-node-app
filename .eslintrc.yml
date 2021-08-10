@@ -1,21 +1,21 @@
 extends: airbnb-base
 plugins:
-    - spellcheck
+  - spellcheck
 rules:
-    spellcheck/spell-checker:
+  spellcheck/spell-checker:
     - 1
     - comments: true
       strings: true
       identifiers: true
       lang: en_US
       skipWords:
-      - healthz
-      - dayjs
-      - Pragma
-      - liveness
-      - revalidate
-      - supertest
+        - healthz
+        - dayjs
+        - Pragma
+        - liveness
+        - revalidate
+        - supertest
       skipIfMatch:
-      - http://[^s]*
-      - "^[-\\w]+/[-\\w\\.]+$"
+        - http://[^s]*
+        - "^[-\\w]+/[-\\w\\.]+$"
       minLength: 5
