@@ -64,9 +64,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Set up QEMU
+        id: setup-qemu
+        uses: docker/setup-qemu-action@v1
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Enable Docker Multi-Arch Builds
+        id: docker-multiarch
+        run: echo ${{ steps.buildx.outputs.platforms }}
 
       - name: Build & Push Docker Image
         id: docker-build
