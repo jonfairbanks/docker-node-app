@@ -43,7 +43,3 @@ For testing that pods are balancing correctly, you can make multiple requests to
 
 To make 50 requests and write them to a file, you can run the following with your endpoint:
 `for run in {1..50}; do curl -sSL -D - kube.fairbanks.dev -o /dev/null | grep X-Hostname; done`
-
-### ARM Support
-
-This application also has an experimental `jonfairbanks/docker-node-app:buildx` tag which supports both x86 and ARM based platforms. For more details, checkout the [ARM Documentation](/docs/ARM.md).
