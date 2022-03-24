@@ -26,7 +26,7 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-spellcheck": "0.0.17",
     "git-branch-is": "^4.0.0",
     "husky": "^7.0.4",
