@@ -12,7 +12,7 @@
     "test-watch": "clear && jest --detectOpenHandles --watchAll"
   },
   "dependencies": {
-    "dayjs": "^1.10.4",
+    "dayjs": "^1.11.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3"
   },
