@@ -10,6 +10,8 @@ on:
       - "master"
       - "main"
       - "develop"
+env:
+  TERM: 'xterm'
 
 jobs:
   node-lint:
