@@ -141,34 +141,34 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
-  chart-test:
-    name: Validate Helm chart
-    needs: docker-build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # chart-test:
+  #   name: Validate Helm chart
+  #   needs: docker-build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Define sha_short
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+  #     - name: Define sha_short
+  #       id: vars
+  #       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.4.0
+  #     - name: Set up Helm
+  #       uses: azure/setup-helm@v1
+  #       with:
+  #         version: v3.4.0
 
-      - name: Update chart image tag
-        run: |
-          sed -r -i 's/(appVersion:[^*])([[:alnum:].]*.*)/\1${{ steps.vars.outputs.sha_short }}/g' ./chart/Chart.yaml
+  #     - name: Update chart image tag
+  #       run: |
+  #         sed -r -i 's/(appVersion:[^*])([[:alnum:].]*.*)/\1${{ steps.vars.outputs.sha_short }}/g' ./chart/Chart.yaml
 
-      - name: Create Kind cluster
-        uses: helm/kind-action@v1.2.0
+  #     - name: Create Kind cluster
+  #       uses: helm/kind-action@v1.2.0
 
-      - name: Install and Test chart
-        run: |
-          helm install test-release ./chart --wait --debug
-          helm test test-release
+  #     - name: Install and Test chart
+  #       run: |
+  #         helm install test-release ./chart --wait --debug
+  #         helm test test-release
 
   release:
     name: "Release"
