@@ -238,7 +238,7 @@ jobs:
           
           # Package chart and push commit
           helm package ./chart
-          cp *.tgz "$CLONE_DIR/packages/"
+          cp *.tgz "$CLONE_DIR/_releases/"
           cd "$CLONE_DIR"
           git add .
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
