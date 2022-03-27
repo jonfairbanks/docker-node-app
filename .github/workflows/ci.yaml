@@ -172,7 +172,7 @@ jobs:
 
   release:
     name: "Release"
-    needs: [chart-test]
+    needs: [docker-build]
     runs-on: ubuntu-latest
     steps:
 
