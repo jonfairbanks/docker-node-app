@@ -207,13 +207,9 @@ jobs:
         with:
           github-token: ${{ secrets.HELM_CHARTS_PAT }}
 
-  notify:
-    name: "Notify Slack"
-    needs: [merge]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-        if: always()
+      - name: Notify Slack
+            uses: act10ns/slack@v1
+            with:
+              status: ${{ job.status }}
+              steps: ${{ toJson(steps) }}
+            if: always()
