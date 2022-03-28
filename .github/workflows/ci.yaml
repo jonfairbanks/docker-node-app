@@ -279,6 +279,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./
+          platforms: linux/amd64,linux/arm64,linux/arm
           file: ./Dockerfile
           push: true
           tags: ${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
