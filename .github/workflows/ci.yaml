@@ -124,7 +124,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
           
-            - name: Set up QEMU
+      - name: Set up QEMU
         id: setup-qemu
         uses: docker/setup-qemu-action@v1
 
