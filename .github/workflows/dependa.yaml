@@ -10,7 +10,8 @@ on:
       - "develop"
 env:
   TERM: 'xterm'
-
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  
 jobs:
   node-lint:
     name: Lint Node.JS
@@ -205,3 +206,14 @@ jobs:
         uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           github-token: ${{ secrets.HELM_CHARTS_PAT }}
+
+  notify:
+    name: "Notify Slack"
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: always()

@@ -6,6 +6,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/jonfairbanks/docker-node-app.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/docker-node-app.svg)
+[![CI](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci.yaml/badge.svg)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci.yaml)
 ![Lines of code](https://img.shields.io/tokei/lines/github/jonfairbanks/docker-node-app)
 ![License](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
 
