@@ -1,8 +1,8 @@
 name: "CI"
 # SECRETS NEEDED:
 # DOCKER_USERNAME - Container Registry Username (github or dockerhub)
-# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push priveledges
-# HELM_CHARTS_PAT - PAT that has access to push to the github based helm charts repo such eg: https://github.com/bsord/helm-charts
+# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push privileges
+# HELM_CHARTS_PAT - PAT that has access to push to the github based helm charts repo such eg: https://github.com/jonfairbanks/helm-charts
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
 env:
   TERM: 'xterm'
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
+
 jobs:
   node-lint:
     name: Lint Node.JS
@@ -249,7 +249,7 @@ jobs:
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
-        id: buildx
+        id: setup-buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
@@ -259,7 +259,7 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         
       - name: Build & Push Base Image
-        id: docker_build
+        id: docker-build
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
@@ -272,6 +272,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Package and publish Helm Chart
+        id: publish-helm
         run: |
           # Setup auth and workspace
           CLONE_DIR=$(mktemp -d)
@@ -287,12 +288,8 @@ jobs:
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
           git push -u origin master
 
-  notify:
-    name: "Notify Slack"
-    needs: [release]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: act10ns/slack@v1
+      - name: Notify Slack
+        uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
