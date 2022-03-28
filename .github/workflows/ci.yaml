@@ -265,3 +265,8 @@ jobs:
           git add .
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
           git push -u origin master
+
+      - name: Auto-Merge
+        uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          github-token: ${{ secrets.HELM_CHARTS_PAT }}
