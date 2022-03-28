@@ -35,14 +35,19 @@ jobs:
   node-test:
     name: Run Test Suite
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 17.x] # https://nodejs.org/en/about/releases/
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: Use Node.js v${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
