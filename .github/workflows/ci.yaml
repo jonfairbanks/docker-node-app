@@ -202,7 +202,6 @@ jobs:
     needs: [docker-build]
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout source code
         uses: "actions/checkout@v2"
         with:
@@ -286,3 +285,14 @@ jobs:
           git add .
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
           git push -u origin master
+
+  notify:
+    name: "Notify Slack"
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: always()
