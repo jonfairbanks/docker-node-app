@@ -1,8 +1,8 @@
 name: "Dependabot Auto-Merge"
 # SECRETS NEEDED:
 # DOCKER_USERNAME - Container Registry Username (github or dockerhub)
-# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push priveledges
-# HELM_CHARTS_PAT - PAT that has access to push to the github based helm charts repo such eg: https://github.com/bsord/helm-charts
+# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push privileges
+# HELM_CHARTS_PAT - PAT that has access to push to the github based helm charts repo such eg: https://github.com/jonfairbanks/helm-charts
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ on:
 env:
   TERM: 'xterm'
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
+
 jobs:
   node-lint:
     name: Lint Node.JS
@@ -209,7 +209,7 @@ jobs:
 
   notify:
     name: "Notify Slack"
-    needs: [release]
+    needs: [merge]
     runs-on: ubuntu-latest
     steps:
       - uses: act10ns/slack@v1
