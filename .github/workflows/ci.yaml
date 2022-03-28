@@ -288,9 +288,8 @@ jobs:
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
           git push -u origin master
 
-      # - name: "Notify Slack"
-      #   uses: act10ns/slack@v1
-      #     with:
-      #       status: ${{ job.status }}
-      #       steps: ${{ toJson(steps) }}
-      #     if: always()
+      - name: "Notify Slack"
+        uses: act10ns/slack@v1
+          with:
+            status: ${{ job.status }}
+            steps: ${{ toJson(steps) }}
