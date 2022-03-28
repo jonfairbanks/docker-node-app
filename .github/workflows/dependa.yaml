@@ -10,7 +10,8 @@ on:
       - "develop"
 env:
   TERM: 'xterm'
-
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  
 jobs:
   node-lint:
     name: Lint Node.JS
