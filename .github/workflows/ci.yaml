@@ -170,9 +170,26 @@ jobs:
   #         helm install test-release ./chart --wait --debug
   #         helm test test-release
 
+  #     - name: Debug Helm Chart
+  #       if: failure() && steps.test-chart.outcome == 'failure'
+  #       run: |
+  #         kubectl get events
+  #         kubectl describe hpa
+  #         kubectl describe deploy
+  #         kubectl describe ing
+  #         kubectl describe pdb
+  #         kubectl describe svc
+  #         kubectl describe serviceaccount
+  #         kubectl describe po
+
+  #         for pod in `kubectl get po -o json |  jq '.items[] | .metadata.name' | sed 's/"//g'` ; do
+  #           echo $pod
+  #           kubectl logs $pod 
+  #         done
+
   release:
     name: "Release"
-    needs: [chart-test]
+    needs: [docker-build]
     runs-on: ubuntu-latest
     steps:
 
@@ -238,7 +255,7 @@ jobs:
           
           # Package chart and push commit
           helm package ./chart
-          cp *.tgz "$CLONE_DIR/packages/"
+          cp *.tgz "$CLONE_DIR/_releases/"
           cd "$CLONE_DIR"
           git add .
           git commit --message "Update from https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
