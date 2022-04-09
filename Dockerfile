@@ -2,12 +2,18 @@
 FROM node:slim as base
 RUN apt-get -qq update; apt-get -qq install wget gpg -y
 ENV NODE_ENV=production
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
-RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
-  && gpg --batch --verify /tini.asc /tini
-RUN chmod +x /tini
+RUN set -eux; \
+  dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+  export TINI_VERSION='0.19.0'; \
+  wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch"; \
+  wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch.asc"; \
+  export GNUPGHOME="$(mktemp -d)"; \
+  gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7; \
+  gpg --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini; \
+  gpgconf --kill all; \
+  rm -r "$GNUPGHOME" /usr/local/bin/tini.asc; \
+  chmod +x /usr/local/bin/tini; \
+  tini -h;
 RUN apt-get -qq purge wget gpg -y; apt-get -qq autoremove -y; apt-get -qq autoclean; rm -rf /var/lib/{apt,dpkg,cache,log}/
 RUN npm i npm@latest -g
 # apt-get is unavailable after this point
