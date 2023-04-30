@@ -1,5 +1,5 @@
 # Base
-FROM node:slim as base
+FROM node:lts-alpine as base
 RUN apt-get -qq update; apt-get -qq install wget gpg -y
 ENV NODE_ENV=production
 RUN set -eux; \
