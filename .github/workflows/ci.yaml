@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 17.x] # https://nodejs.org/en/about/releases/
+        node-version: [16.x, 18.x, 20.x] # https://nodejs.org/en/about/releases/
     
     steps:
       - name: Checkout code
@@ -62,7 +62,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Install dependencies
         run: npm ci
