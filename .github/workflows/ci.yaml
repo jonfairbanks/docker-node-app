@@ -105,6 +105,9 @@ jobs:
     name: Docker Build
     needs: [vuln-report, node-lint, node-test, node-audit, helm-lint]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64, linux/arm]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -141,7 +144,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: ${{ matrix.platform }}
           file: ./Dockerfile
           push: true
           tags: ${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
@@ -198,6 +201,9 @@ jobs:
     name: "Release"
     needs: [docker-build]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64, linux/arm]
     steps:
       - name: Checkout source code
         id: checkout-code
@@ -261,7 +267,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: ${{ matrix.platform }}
           file: ./Dockerfile
           push: true
           tags: ${{ steps.docker-tags.outputs.tags }}
