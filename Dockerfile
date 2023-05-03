@@ -2,12 +2,7 @@
 FROM node:lts-alpine as base
 RUN apk --no-cache update && apk --no-cache add tini
 ENV NODE_ENV=production
-RUN apk del -q wget gnupg && \
-    apk -q autoremove && \
-    apk -q clean && \
-    rm -rf /var/cache/apk/*
 RUN npm i npm@latest -g
-# apt-get is unavailable after this point
 EXPOSE 8080
 RUN mkdir /app && chown -R node:node /app
 WORKDIR /app
