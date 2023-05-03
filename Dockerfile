@@ -1,19 +1,7 @@
 # Base
 FROM node:lts-alpine as base
-RUN apk --no-cache update && apk --no-cache add wget gpg
+RUN apk --no-cache update && apk --no-cache add tini
 ENV NODE_ENV=production
-RUN set -eux; \
-  dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-  export TINI_VERSION='0.19.0'; \
-  wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch"; \
-  wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch.asc"; \
-  export GNUPGHOME="$(mktemp -d)"; \
-  gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5; \
-  gpg --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini; \
-  gpgconf --kill all; \
-  rm -r "$GNUPGHOME" /usr/local/bin/tini.asc; \
-  chmod +x /usr/local/bin/tini; \
-  tini -h;
 RUN apk del -q wget gnupg && \
     apk -q autoremove && \
     apk -q clean && \
@@ -57,5 +45,5 @@ RUN /microscanner $MICROSCANNER_TOKEN --continue-on-failure
 
 # Production ENV
 FROM source as prod
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "index.js"]
