@@ -1,6 +1,6 @@
 # Base
 FROM node:lts-alpine as base
-RUN apt-get -qq update; apt-get -qq install wget gpg -y
+RUN apk -q update; apk -q install wget gpg -y
 ENV NODE_ENV=production
 RUN set -eux; \
   dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -14,7 +14,10 @@ RUN set -eux; \
   rm -r "$GNUPGHOME" /usr/local/bin/tini.asc; \
   chmod +x /usr/local/bin/tini; \
   tini -h;
-RUN apt-get -qq purge wget gpg -y; apt-get -qq autoremove -y; apt-get -qq autoclean; rm -rf /var/lib/{apt,dpkg,cache,log}/
+RUN apk del -q wget gnupg && \
+    apk -q autoremove && \
+    apk -q clean && \
+    rm -rf /var/cache/apk/*
 RUN npm i npm@latest -g
 # apt-get is unavailable after this point
 EXPOSE 8080
