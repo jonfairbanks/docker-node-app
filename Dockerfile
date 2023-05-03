@@ -1,6 +1,6 @@
 # Base
 FROM node:lts-alpine as base
-RUN apk -q update; apk -q install wget gpg -y
+RUN apk --no-cache update && apk --no-cache add wget gpg
 ENV NODE_ENV=production
 RUN set -eux; \
   dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
