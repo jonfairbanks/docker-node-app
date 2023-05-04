@@ -1,11 +1,10 @@
-name: "CI"
+name: "CI - Main"
 
 on:
   push:
     branches:
       - "master"
       - "main"
-      - "develop"
 env:
   TERM: 'xterm'
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -235,7 +234,7 @@ jobs:
           if [[ $CUR_BRANCH = "main" || $CUR_BRANCH = "master" ]]; then
               TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }},${{ github.repository }}:latest"
           else
-              TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }}"
+              TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }},${{ github.repository }}:develop"
           fi
           echo "::set-output name=tags::${TAGS}"
 
