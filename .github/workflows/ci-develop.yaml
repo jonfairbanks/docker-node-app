@@ -199,9 +199,6 @@ jobs:
     name: "Release"
     needs: [docker-build]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64, linux/arm64/v8, linux/arm]
     steps:
       - name: Checkout source code
         id: checkout-code
@@ -237,14 +234,6 @@ jobs:
           fi
           echo "::set-output name=tags::${TAGS}"
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache/${{ runner.os }}-${{ steps.buildx.outputs.name }}-${{ hashFiles('**/Dockerfile') }}
-          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}-{{ hashFiles('**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-          
       - name: Set up QEMU
         id: setup-qemu
         uses: docker/setup-qemu-action@v1
@@ -252,6 +241,14 @@ jobs:
       - name: Set up Docker Buildx
         id: setup-buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache/${{ runner.os }}-${{ steps.setup-buildx.outputs.name }}-${{ hashFiles('**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}-{{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Login to DockerHub
         uses: docker/login-action@v1 
@@ -263,9 +260,9 @@ jobs:
         id: docker-build
         uses: docker/build-push-action@v2
         with:
-          builder: ${{ steps.buildx.outputs.name }}
+          builder: ${{ steps.setup-buildx.outputs.name }}
           context: ./
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
           file: ./Dockerfile
           push: true
           tags: ${{ steps.docker-tags.outputs.tags }}
