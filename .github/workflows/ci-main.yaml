@@ -102,7 +102,7 @@ jobs:
 
   release:
     name: "Release"
-    needs: [docker-build]
+    needs: [node-lint, node-test, node-audit, vuln-report, helm-lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
