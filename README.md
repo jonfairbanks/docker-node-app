@@ -2,12 +2,11 @@
 
 ![Docker+Node](https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/logo.jpg)
 
-![GitHub Workflow Status](<https://img.shields.io/github/workflow/status/jonfairbanks/docker-node-app/Create%20Release(s)?label=Docker%20Build>)
+[![CI - Main](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml/badge.svg?branch=master)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml)
+[![CI - Development](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml/badge.svg?branch=develop)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml)
 ![GitHub top language](https://img.shields.io/github/languages/top/jonfairbanks/docker-node-app.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/docker-node-app.svg)
-[![CI - Main](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml/badge.svg?branch=master)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml)
-[![CI - Development](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml/badge.svg?branch=develop)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml)
 ![Lines of code](https://img.shields.io/tokei/lines/github/jonfairbanks/docker-node-app)
 ![License](https://img.shields.io/github/license/jonfairbanks/docker-node-app.svg?style=flat)
 
