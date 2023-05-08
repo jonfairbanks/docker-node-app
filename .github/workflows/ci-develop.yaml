@@ -1,14 +1,8 @@
-name: "CI"
-# SECRETS NEEDED:
-# DOCKER_USERNAME - Container Registry Username (github or dockerhub)
-# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push privileges
-# HELM_CHARTS_PAT - PAT that has access to push to the github based helm charts repo such eg: https://github.com/jonfairbanks/helm-charts
+name: "CI - Development"
 
 on:
   push:
     branches:
-      - "master"
-      - "main"
       - "develop"
 env:
   TERM: 'xterm'
@@ -16,7 +10,7 @@ env:
 
 jobs:
   node-lint:
-    name: Lint Node.JS
+    name: Lint Node.js
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,7 +19,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Install dependencies
         run: npm ci
@@ -38,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 17.x] # https://nodejs.org/en/about/releases/
+        node-version: [16.x, 18.x, 20.x] # https://nodejs.org/en/about/releases/
     
     steps:
       - name: Checkout code
@@ -66,7 +60,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Install dependencies
         run: npm ci
@@ -117,14 +111,6 @@ jobs:
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-          
       - name: Set up QEMU
         id: setup-qemu
         uses: docker/setup-qemu-action@v1
@@ -132,6 +118,14 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache/${{ runner.os }}-${{ steps.setup-buildx.outputs.name }}-${{ hashFiles('**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}-{{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Login to DockerHub
         uses: docker/login-action@v1 
@@ -145,7 +139,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: linux/amd64,linux/arm64
           file: ./Dockerfile
           push: true
           tags: ${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
@@ -204,6 +198,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
+        id: checkout-code
         uses: "actions/checkout@v2"
         with:
           ref: ${{ github.ref }}
@@ -232,18 +227,10 @@ jobs:
           if [[ $CUR_BRANCH = "main" || $CUR_BRANCH = "master" ]]; then
               TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }},${{ github.repository }}:latest"
           else
-              TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }}"
+              TAGS="${{ github.repository }}:${{ steps.bump-tag.outputs.new_tag }},${{ github.repository }}:develop"
           fi
           echo "::set-output name=tags::${TAGS}"
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-          
       - name: Set up QEMU
         id: setup-qemu
         uses: docker/setup-qemu-action@v1
@@ -251,6 +238,14 @@ jobs:
       - name: Set up Docker Buildx
         id: setup-buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache/${{ runner.os }}-${{ steps.setup-buildx.outputs.name }}-${{ hashFiles('**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx-${{ steps.vars.outputs.sha_short }}-{{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Login to DockerHub
         uses: docker/login-action@v1 
@@ -262,9 +257,9 @@ jobs:
         id: docker-build
         uses: docker/build-push-action@v2
         with:
-          builder: ${{ steps.buildx.outputs.name }}
+          builder: ${{ steps.setup-buildx.outputs.name }}
           context: ./
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: linux/amd64,linux/arm64
           file: ./Dockerfile
           push: true
           tags: ${{ steps.docker-tags.outputs.tags }}
