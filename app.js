@@ -42,14 +42,14 @@ app.get('/', (req, res) => {
 app.get('/healthz', (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   res
+    .status(200)
     .send({
       response: {
         msg: 'docker-node-app is up and running...',
         host: os.hostname(),
         clientSourceIP: ip,
       },
-    })
-    .status(200);
+    });
 });
 
 module.exports = app;

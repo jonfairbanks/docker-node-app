@@ -1,107 +1,18 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: docker-node-app
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: docker-node-app
-  namespace: docker-node-app
-  annotations:
-    keel.sh/approvals: '1'
-    keel.sh/policy: all
-    keel.sh/pollSchedule: "@every 5m"
-    keel.sh/trigger: poll
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: docker-node-app
-  template:
-    metadata:
-      labels:
-        app: docker-node-app
-    spec:
-      terminationGracePeriodSeconds: 10
-      containers:
-      - name: docker-node-app
-        image: jonfairbanks/docker-node-app
-        imagePullPolicy: Always
-        ports:
-        - name: http
-          containerPort: 8080
-        livenessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 3
-        resources:
-          requests:
-            cpu: 100m
-        volumeMounts:
-          - name: tz-config
-            mountPath: /etc/localtime
-      volumes:
-        - name: tz-config
-          hostPath:
-              path: /usr/share/zoneinfo/America/Los_Angeles    
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: docker-node-app
-  namespace: docker-node-app
-spec:
-  ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 8080
-  selector:
-    app: docker-node-app
-  type: LoadBalancer
-  externalTrafficPolicy: Local
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: docker-node-app
-  namespace: docker-node-app
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
-    kubernetes.io/tls-acme: "true"
-spec:
-  tls:
-  - hosts:
-    - kube.fairbanks.dev
-    secretName: docker-node-app-tls
-  rules:
-  - host: kube.fairbanks.dev
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: docker-node-app
-          servicePort: 80
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: docker-node-app
-  namespace: docker-node-app
-spec:
-  maxReplicas: 10
-  minReplicas: 3
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: docker-node-app
-  targetCPUUtilizationPercentage: 5
+services:
+  app:
+    build:
+      context: .
+      target: development
+    environment:
+      NODE_ENV: development
+      PORT: 8080
+    init: true
+    ports:
+      - "8080:8080"
+      - "9229:9229"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:

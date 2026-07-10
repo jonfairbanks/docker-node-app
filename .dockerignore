@@ -2,6 +2,9 @@ node_modules
 npm-debug.log
 .npmrc
 .git
+.github
+.DS_Store
+coverage
 .gitignore
 .gitattributes
 .cache
@@ -12,7 +15,7 @@ logo.*
 *.png
 *.gif
 *.jpg
-*.bmpr
+*.bmp
 *.svg
 *.sample
 .env*

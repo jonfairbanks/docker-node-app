@@ -2,8 +2,7 @@
 
 ![Docker+Node](https://raw.githubusercontent.com/jonfairbanks/docker-node-app/master/logo.jpg)
 
-[![CI - Main](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml/badge.svg?branch=master)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-main.yaml)
-[![CI - Development](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml/badge.svg?branch=develop)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci-develop.yaml)
+[![CI](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/jonfairbanks/docker-node-app/actions/workflows/ci.yaml)
 ![GitHub top language](https://img.shields.io/github/languages/top/jonfairbanks/docker-node-app.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/docker-node-app.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/docker-node-app.svg)
@@ -12,23 +11,45 @@
 
 ## A sample Node.js app in Docker
 
-- Final Image Size: ~70MB
-- Includes the latest versions of Node, NPM and Yarn
+- Uses Node.js 24 LTS
+- Reproducible npm installs from the committed lockfile
 - Runs as a non-root user for enhanced security
-- Multi-stage including development, test, audit and production environments
-- Scan and audit dependencies with [Microscanner](https://www.aquasec.com/news/microscanner-new-free-image-vulnerability-scanner-for-developers/)
+- Multi-stage development, test, and production images
+- Snyk dependency scanning and CodeQL security checks in CI
 - Properly handles `SIGINT` and `SIGTERM` events with [tini](https://github.com/krallin/tini)
-- Follows many development, virtualization and styling best-practices
+
+### Local development
+
+With Node.js 24 installed:
+
+```shell
+npm ci
+npm test
+npm run lint
+npm run dev
+```
+
+Or run the development container with live source mounts:
+
+```shell
+docker compose up --build
+```
 
 ### Docker
 
 This application is also available on [Dockerhub](https://hub.docker.com/r/jonfairbanks/docker-node-app).
 
 To launch the container:
-`docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:latest`
 
-To attach to a running container:
-`docker exec -it docker-node-app /bin/ash`
+```shell
+docker run -d -p 8080:8080 --name docker-node-app jonfairbanks/docker-node-app:latest
+```
+
+To verify its health:
+
+```shell
+curl --fail http://localhost:8080/healthz
+```
 
 ### Kubernetes
 
@@ -40,7 +61,17 @@ This application can also be helpful verifying Kubernetes:
 - Cluster Load Balancing
 - Request IP Passthrough
 
+Validate or install the bundled chart with Helm 3:
+
+```shell
+helm lint chart
+helm upgrade --install docker-node-app chart
+```
+
 For testing that pods are balancing correctly, you can make multiple requests to your app to verify.
 
 To make 50 requests and write them to a file, you can run the following with your endpoint:
-`for run in {1..50}; do curl -sSL -D - kube.fairbanks.dev -o /dev/null | grep X-Hostname; done`
+
+```shell
+for run in {1..50}; do curl -sSL -D - docker-node-app.local -o /dev/null | grep X-Hostname; done
+```
