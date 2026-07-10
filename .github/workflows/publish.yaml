@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v5
       - name: Check out chart repository
         uses: actions/checkout@v6
         with:
