@@ -1,4 +1,4 @@
-{{- if or (and .Values.autoscaling.enabled (gt (.Values.autoscaling.minReplicas | int) 1)) (gt (.Values.replicaCount | int) 1) -}}
+{{- if .Values.podDisruptionBudget.enabled -}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -9,5 +9,5 @@ spec:
   selector:
     matchLabels:
       {{- include "docker-node-app.selectorLabels" . | nindent 6 }}
-  minAvailable: {{ .Values.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
 {{- end }}
