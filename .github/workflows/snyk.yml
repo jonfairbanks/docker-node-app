@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   open-source:
-    name: Open Source
+    name: Open Source and Container
     if: >-
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' ||
@@ -54,4 +54,17 @@ jobs:
           args: >-
             --file=package.json
             --package-manager=npm
+            --severity-threshold=high
+
+      - name: Build production image
+        if: env.SNYK_TOKEN != ''
+        run: docker build --target production --tag docker-node-app:snyk .
+
+      - name: Scan production image
+        if: env.SNYK_TOKEN != ''
+        uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+        with:
+          image: docker-node-app:snyk
+          args: >-
+            --file=Dockerfile
             --severity-threshold=high
