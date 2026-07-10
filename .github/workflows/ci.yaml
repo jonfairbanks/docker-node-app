@@ -64,5 +64,13 @@ jobs:
           context: .
           target: test
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=test
+          cache-to: type=gha,mode=max,scope=test
+      - name: Build production target
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: production
+          push: false
+          cache-from: type=gha,scope=production
+          cache-to: type=gha,mode=max,scope=production
