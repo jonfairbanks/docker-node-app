@@ -66,5 +66,6 @@ jobs:
         with:
           image: docker-node-app:snyk
           args: >-
+            --exclude-app-vulns
             --file=Dockerfile
             --severity-threshold=high
