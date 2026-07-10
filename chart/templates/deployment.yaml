@@ -19,12 +19,16 @@ spec:
     {{- end }}
       labels:
         {{- include "docker-node-app.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "docker-node-app.serviceAccountName" . }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -37,26 +41,15 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: production
           livenessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 3
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 3
-          volumeMounts:
-            - name: tz-config
-              mountPath: /etc/localtime
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: tz-config
-          hostPath:
-              path: /usr/share/zoneinfo/America/Los_Angeles
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
