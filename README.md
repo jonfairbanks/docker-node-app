@@ -11,7 +11,7 @@
 
 ## A sample Node.js app in Docker
 
-- Uses Node.js 24 LTS
+- Uses Node.js 26
 - Reproducible npm installs from the committed lockfile
 - Runs as a non-root user for enhanced security
 - Multi-stage development, test, and production images
@@ -20,7 +20,7 @@
 
 ### Local development
 
-With Node.js 24 installed:
+With Node.js 26 installed:
 
 ```shell
 npm ci
