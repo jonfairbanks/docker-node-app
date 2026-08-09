@@ -68,6 +68,13 @@ helm lint chart
 helm upgrade --install docker-node-app chart
 ```
 
+The chart sets the pod timezone to `America/Los_Angeles`. Override it with an
+IANA timezone name when deploying elsewhere:
+
+```shell
+helm upgrade --install docker-node-app chart --set timezone=Europe/London
+```
+
 For testing that pods are balancing correctly, you can make multiple requests to your app to verify.
 
 To make 50 requests and write them to a file, you can run the following with your endpoint:
