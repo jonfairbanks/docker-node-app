@@ -68,9 +68,6 @@ readinessProbe:
   httpGet:
     path: /healthz
     port: http
-  # HPA scale-outs showed a few connection-refused checks at two seconds;
-  # three seconds gives the Node listener time to bind without delaying traffic
-  # once the pod is actually ready.
   initialDelaySeconds: 3
   periodSeconds: 5
 
