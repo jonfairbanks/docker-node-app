@@ -3,8 +3,6 @@ replicaCount: 3
 image:
   repository: jonfairbanks/docker-node-app
   pullPolicy: IfNotPresent
-  # CI replaces the default with the immutable full-commit image tag before
-  # publishing the chart. It can be overridden for local development.
   tag: ""
 
 imagePullSecrets: []
