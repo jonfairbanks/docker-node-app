@@ -4,6 +4,7 @@ const app = express();
 const os = require('os');
 const dayjs = require('dayjs');
 const advancedFormat = require('dayjs/plugin/advancedFormat');
+let isDraining = false;
 
 app.set('view engine', 'ejs');
 dayjs.extend(advancedFormat);
@@ -49,7 +50,18 @@ app.get('/healthz', (req, res) => {
         host: os.hostname(),
         clientSourceIP: ip,
       },
-    });
+  });
 });
 
-module.exports = app;
+// During termination, keep the container alive long enough for in-flight
+// requests to finish, but tell Kubernetes and load balancers not to send it
+// any new requests.
+app.get('/readyz', (_req, res) => {
+  res.sendStatus(isDraining ? 503 : 200);
+});
+
+function setDraining(value) {
+  isDraining = value;
+}
+
+module.exports = { app, setDraining };
