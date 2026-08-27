@@ -4,7 +4,7 @@ const SHUTDOWN_TIMEOUT_MS = Number.parseInt(
   process.env.SHUTDOWN_TIMEOUT_MS || '25000',
   10,
 );
-const app = require('./app');
+const { app, setDraining } = require('./app');
 
 function startServer({ port = PORT, host = '0.0.0.0', logger = console } = {}) {
   return app.listen(port, host, () => {
@@ -14,7 +14,11 @@ function startServer({ port = PORT, host = '0.0.0.0', logger = console } = {}) {
 
 function createGracefulShutdown(
   server,
-  { timeoutMs = SHUTDOWN_TIMEOUT_MS, logger = console } = {},
+  {
+    timeoutMs = SHUTDOWN_TIMEOUT_MS,
+    logger = console,
+    onShutdownStart = () => {},
+  } = {},
 ) {
   let shutdownPromise;
 
@@ -24,6 +28,7 @@ function createGracefulShutdown(
     }
 
     logger.log(`Received ${signal}; draining active connections...`);
+    onShutdownStart();
     shutdownPromise = new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         logger.error(`Graceful shutdown exceeded ${timeoutMs}ms; forcing close.`);
@@ -49,7 +54,9 @@ function createGracefulShutdown(
 
 if (require.main === module) {
   const server = startServer();
-  const shutdown = createGracefulShutdown(server);
+  const shutdown = createGracefulShutdown(server, {
+    onShutdownStart: () => setDraining(true),
+  });
 
   for (const signal of ['SIGTERM', 'SIGINT']) {
     process.once(signal, () => {
