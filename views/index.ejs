@@ -1,77 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <link rel="shortcut icon" href="/images/favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Lato"
-      rel="stylesheet"
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add('fonts-loading');</script>
+    <style>html, body { background: #071b2a; } html.fonts-loading body { visibility: hidden; }</style>
+    <link rel="icon" href="/images/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=block" rel="stylesheet" />
     <link href="/css/index.css" type="text/css" rel="stylesheet" />
-    <meta http-equiv="refresh" content="5" />
     <title>docker-node-app</title>
   </head>
-  <body id="body">
-    <div id="container">
-      <a
-        href="https://github.com/jonfairbanks/docker-node-app"
-        target="_blank"
-        rel="noopener noreferrer"
-        id="repoLink"
-      >
-        <img id="logo" src="/images/icon.svg" height="175vh" />
-      </a>
-      <div id="content">
-        <table>
-          <tr>
-            <td>
-              <% if (hostname) { %>
-              <span style="font-size: 20px"
-                >Hello from <b id="hostname"><%= hostname %></b>!</span
-              >
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <% if (ip) { %>
-              <span id="request-ip"><%= ip %></span>
-              <br />
-              <sub>Request IP</sub>
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <% if (user_agent) { %>
-              <span id="user-agent"><%= user_agent %></span>
-              <br />
-              <sub>User Agent</sub>
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <% if (timestamp) { %>
-              <span id="timestamp"><%= timestamp %></span>
-              <br />
-              <sub>Timestamp</sub>
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span style="font-size: 13px"
-                >This page will automatically reload and connect to new
-                hosts...</span
-              >
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="spinner">
-        <div class="cube1"></div>
-        <div class="cube2"></div>
-      </div>
-    </div>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="https://github.com/jonfairbanks/docker-node-app" target="_blank" rel="noopener noreferrer" aria-label="View docker-node-app on GitHub">
+          <span class="brand-mark" aria-hidden="true"><img src="/images/icon.svg" alt="" /></span>
+          <span>docker-node-app</span>
+        </a>
+      </header>
+
+      <section class="service-status" aria-labelledby="page-title">
+        <div>
+          <p class="section-label">Hostname</p>
+          <% if (hostname) { %>
+          <h1 id="page-title"><%= hostname %></h1>
+          <% } %>
+        </div>
+        <div class="health-state">
+          <span class="pulse" aria-hidden="true"></span>
+          <div><strong>Healthy</strong><span>GET /healthz · 200 OK</span></div>
+        </div>
+      </section>
+
+      <section class="request-details" aria-labelledby="request-details-title">
+        <div class="details-intro"><p class="section-label" id="request-details-title">Request</p></div>
+        <dl>
+          <% if (ip) { %><div class="detail-row"><dt>Client address</dt><dd id="request-ip"><%= ip %></dd></div><% } %>
+          <% if (user_agent) { %><div class="detail-row"><dt>User agent</dt><dd id="user-agent"><%= user_agent %></dd></div><% } %>
+          <% if (timestamp) { %><div class="detail-row"><dt>Rendered at</dt><dd id="timestamp"><%= timestamp %></dd></div><% } %>
+        </dl>
+      </section>
+
+      <footer><span class="refresh-indicator" aria-hidden="true"></span>Refreshing in <span id="refresh-countdown">5</span> seconds...</footer>
+    </main>
+    <script>
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+      });
+
+      const countdown = document.getElementById('refresh-countdown');
+      let secondsRemaining = 5;
+
+      const refreshInterval = window.setInterval(() => {
+        secondsRemaining -= 1;
+        countdown.textContent = secondsRemaining;
+
+        if (secondsRemaining === 0) {
+          window.clearInterval(refreshInterval);
+          window.location.reload();
+        }
+      }, 1000);
+    </script>
   </body>
 </html>
