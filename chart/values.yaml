@@ -77,6 +77,9 @@ autoscaling:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: ""
+  # Optional autoscaling/v2 behavior, passed through unchanged when set.
+  # Leave empty to use Kubernetes defaults.
+  behavior: {}
 
 podDisruptionBudget:
   enabled: true
