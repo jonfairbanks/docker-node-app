@@ -47,6 +47,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch publication from the merged master revision
-        run: gh workflow run publish.yaml --ref master
+        run: gh workflow run publish.yaml --repo "$GITHUB_REPOSITORY" --ref master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
