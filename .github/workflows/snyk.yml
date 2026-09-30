@@ -62,10 +62,17 @@ jobs:
 
       - name: Scan production image
         if: env.SNYK_TOKEN != ''
-        uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
-        with:
-          image: docker-node-app:snyk
-          args: >-
-            --exclude-app-vulns
-            --file=Dockerfile
-            --severity-threshold=high
+        run: |
+          # snyk/actions/docker invokes the legacy `snyk test --docker` path.
+          # Use Snyk's current container command with the current immutable
+          # scanner runtime so scanner updates cannot silently change CI.
+          docker run --rm \
+            --env SNYK_TOKEN \
+            --volume /var/run/docker.sock:/var/run/docker.sock \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            snyk/snyk@sha256:3c6fbd3e70dea2792d6bc2a080335fafdccd243ad9c0b7faa91002caac7d7851 \
+            snyk container test docker-node-app:snyk \
+              --exclude-app-vulns \
+              --file=Dockerfile \
+              --severity-threshold=high

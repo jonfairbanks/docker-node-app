@@ -53,9 +53,9 @@ ingress:
 resources:
   requests:
     cpu: 10m
-    memory: 90Mi
+    memory: 64Mi
   limits:
-    memory: 128Mi
+    memory: 192Mi
 
 livenessProbe:
   httpGet:
@@ -66,17 +66,20 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /healthz
+    path: /readyz
     port: http
-  initialDelaySeconds: 2
+  initialDelaySeconds: 3
   periodSeconds: 5
 
 autoscaling:
   enabled: false
-  minReplicas: 3
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: ""
+  # Optional autoscaling/v2 behavior, passed through unchanged when set.
+  # Leave empty to use Kubernetes defaults.
+  behavior: {}
 
 podDisruptionBudget:
   enabled: true
