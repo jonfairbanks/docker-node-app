@@ -76,7 +76,10 @@ jobs:
             ' <<< "$checks")"
             if [ -z "$missing" ]; then
               current_sha="$(gh api "repos/$GH_REPO/commits/$RELEASE_BRANCH" --jq .sha)"
-              test "$current_sha" = "$RELEASE_SHA"
+              if [ "$current_sha" != "$RELEASE_SHA" ]; then
+                echo "Branch advanced while checks were running; release blocked." >&2
+                exit 1
+              fi
               echo "sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
               echo "branch=$RELEASE_BRANCH" >> "$GITHUB_OUTPUT"
               exit 0
