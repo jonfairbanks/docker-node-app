@@ -44,6 +44,8 @@ spec:
           env:
             - name: NODE_ENV
               value: production
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

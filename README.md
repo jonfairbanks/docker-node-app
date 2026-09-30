@@ -11,7 +11,7 @@
 
 ## A sample Node.js app in Docker
 
-- Uses Node.js 24 LTS
+- Uses Node.js 26
 - Reproducible npm installs from the committed lockfile
 - Runs as a non-root user for enhanced security
 - Multi-stage development, test, and production images
@@ -20,7 +20,7 @@
 
 ### Local development
 
-With Node.js 24 installed:
+With Node.js 26 installed:
 
 ```shell
 npm ci
@@ -66,6 +66,13 @@ Validate or install the bundled chart with Helm 3:
 ```shell
 helm lint chart
 helm upgrade --install docker-node-app chart
+```
+
+The chart sets the pod timezone to `America/Los_Angeles`. Override it with an
+IANA timezone name when deploying elsewhere:
+
+```shell
+helm upgrade --install docker-node-app chart --set timezone=Europe/London
 ```
 
 For testing that pods are balancing correctly, you can make multiple requests to your app to verify.

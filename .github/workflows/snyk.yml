@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   open-source:
-    name: Open Source
+    name: Open Source and Container
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -33,10 +33,10 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.x
           cache: npm
@@ -51,3 +51,22 @@ jobs:
             --file=package.json
             --package-manager=npm
             --severity-threshold=high
+
+      - name: Build production image
+        run: docker build --target production --tag docker-node-app:snyk .
+
+      - name: Scan production image
+        run: |
+          # snyk/actions/docker invokes the legacy `snyk test --docker` path.
+          # Use Snyk's current container command with the current immutable
+          # scanner runtime so scanner updates cannot silently change CI.
+          docker run --rm \
+            --env SNYK_TOKEN \
+            --volume /var/run/docker.sock:/var/run/docker.sock \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            snyk/snyk@sha256:3c6fbd3e70dea2792d6bc2a080335fafdccd243ad9c0b7faa91002caac7d7851 \
+            snyk container test docker-node-app:snyk \
+              --exclude-app-vulns \
+              --file=Dockerfile \
+              --severity-threshold=high
