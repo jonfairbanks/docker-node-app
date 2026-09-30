@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:24-alpine AS base
-RUN apk add --no-cache tini
+FROM node:26-alpine AS base
+ENV NPM_CONFIG_ENGINE_STRICT=true
+RUN apk add --no-cache tini tzdata
 WORKDIR /app
 
 FROM base AS dependencies
