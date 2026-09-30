@@ -51,6 +51,17 @@ To verify its health:
 curl --fail http://localhost:8080/healthz
 ```
 
+### Automatic Production Releases
+
+Changes merge into `develop`, then promote to the production branch `master`.
+After the required checks pass, GitHub Actions publishes the production image
+as `jonfairbanks/docker-node-app:latest` and an immutable commit tag.
+
+The home cluster's Argo CD Image Updater follows `latest`, records its digest
+in Git automatically, and Argo CD rolls the deployment. App-only releases need
+no manual cluster-state edit or Helm chart version bump. The `develop` image
+tag is kept separate from production.
+
 ### Kubernetes
 
 You can find this app on [Helm](https://jonfairbanks.github.io/helm-charts/)!
