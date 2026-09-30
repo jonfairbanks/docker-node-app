@@ -1,0 +1,140 @@
+name: Weekly Develop to Master
+
+on:
+  schedule:
+    # Match F5's Monday schedule, away from the start-of-hour hot spot.
+    - cron: '17 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-develop-to-master
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Promote Develop and Verify Publishing
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Detect Unreleased Changes
+        id: changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count="$(gh api "repos/$GH_REPO/compare/master...develop" --jq '.files | length')"
+          echo "has_changes=$([ "$count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Open and Merge Release PR
+        if: steps.changes.outputs.has_changes == 'true'
+        id: release
+        env:
+          # As in F5, this token lets PR creation and merging trigger normal checks.
+          GH_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::PERSONAL_TOKEN is required for release PR workflow events."
+            exit 1
+          fi
+          # Keep strict branch protection without writing directly to develop.
+          behind="$(gh api "repos/$GH_REPO/compare/master...develop" --jq .behind_by)"
+          if [ "$behind" -gt 0 ]; then
+            sync_branch="feature/weekly-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            develop_sha="$(gh api "repos/$GH_REPO/commits/develop" --jq .sha)"
+            gh api --method POST "repos/$GH_REPO/git/refs" \
+              -f "ref=refs/heads/$sync_branch" -f "sha=$develop_sha" >/dev/null
+            sync_sha="$(gh api --method POST "repos/$GH_REPO/merges" \
+              -f "base=$sync_branch" -f head=master --jq .sha)"
+            sync_url="$(gh pr create --base develop --head "$sync_branch" \
+              --title 'Sync Develop With Production' \
+              --body '## Summary
+
+          - Bring the production history into develop before its next release.')"
+            required='["Test (Node 26)","Lint and audit","Helm lint and render","Build container","Open Source and Container","Analyze JavaScript"]'
+            ready=false
+            for attempt in {1..60}; do
+              runs="$(gh api "repos/$GH_REPO/commits/$sync_sha/check-runs?per_page=100")"
+              ready="$(jq --argjson required "$required" '
+                .check_runs as $runs | all($required[]; . as $name |
+                  any($runs[]; .name == $name and .app.slug == "github-actions"))
+              ' <<< "$runs")"
+              if [ "$ready" = true ]; then break; fi
+              sleep 10
+            done
+            if [ "$ready" != true ]; then
+              echo "Required sync checks did not start: $sync_url" >&2
+              exit 1
+            fi
+            gh pr checks "$sync_url" --required --watch --fail-fast --interval 10
+            gh pr merge "$sync_url" --merge --match-head-commit "$sync_sha"
+          fi
+          pr_url="$(gh pr list --base master --head develop --state open --json url --jq '.[0].url')"
+          if [ -z "$pr_url" ]; then
+            pr_url="$(gh pr create --base master --head develop \
+              --title 'Promote Develop to Production' \
+              --body '## Summary
+
+          - Promote develop to production after every required check passes.')"
+          fi
+          head_sha="$(gh pr view "$pr_url" --json headRefOid --jq .headRefOid)"
+          # Refresh the vulnerability data even when reusing an older release PR.
+          check_after="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for workflow in ci.yaml snyk.yml codeql.yml; do
+            gh workflow run "$workflow" --ref develop
+          done
+          required='["Test (Node 26)","Lint and audit","Helm lint and render","Build container","Open Source and Container","Analyze JavaScript"]'
+          missing=checks
+          for attempt in {1..60}; do
+            runs="$(gh api --paginate --slurp "repos/$GH_REPO/commits/$head_sha/check-runs?per_page=100")"
+            missing="$(jq -r --argjson required "$required" --arg after "$check_after" '
+              [.[].check_runs[] | select(.app.slug == "github-actions")] as $runs
+              | $required[] as $name
+              | ([$runs[] | select(.name == $name)] | max_by(.id)) as $latest
+              | select($latest == null or $latest.status != "completed"
+                  or $latest.conclusion != "success" or $latest.started_at < $after)
+              | $name
+            ' <<< "$runs")"
+            if [ -z "$missing" ]; then break; fi
+            echo "Waiting for fresh checks on $head_sha: $missing"
+            sleep 10
+          done
+          if [ -n "$missing" ]; then
+            echo "Release blocked by missing or unsuccessful fresh checks: $missing" >&2
+            exit 1
+          fi
+          gh pr merge "$pr_url" --merge --auto --match-head-commit "$head_sha"
+          for attempt in {1..30}; do
+            if [ "$(gh pr view "$pr_url" --json state --jq .state)" = MERGED ]; then
+              echo "sha=$(gh pr view "$pr_url" --json mergeCommit --jq .mergeCommit.oid)" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Release PR has not merged: $pr_url" >&2
+          exit 1
+
+      - name: Verify Gated Publishing
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          for attempt in {1..60}; do
+            run_id="$(gh run list --workflow publish.yaml --branch master --event workflow_run \
+              --limit 30 --json databaseId,headSha \
+              --jq ".[] | select(.headSha == \"$RELEASE_SHA\") | .databaseId" | head -n 1)"
+            if [ -n "$run_id" ]; then
+              gh run watch "$run_id" --exit-status --interval 10
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "No Publish run found for $RELEASE_SHA." >&2
+          exit 1
