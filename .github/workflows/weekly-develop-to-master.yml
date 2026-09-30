@@ -2,8 +2,9 @@ name: Weekly Develop to Master
 
 on:
   schedule:
-    # Match F5's Monday schedule, away from the start-of-hour hot spot.
-    - cron: '17 12 * * 1'
+    # Match F5: Monday at 2:15 PM Pacific, including daylight saving time.
+    - cron: '15 14 * * 1'
+      timezone: 'America/Los_Angeles'
   workflow_dispatch:
 
 permissions:
