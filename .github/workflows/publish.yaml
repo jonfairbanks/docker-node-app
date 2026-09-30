@@ -61,7 +61,7 @@ jobs:
           if [ "$RELEASE_BRANCH" = master ]; then
             required='["Test (Node 26)","Lint and audit","Helm lint and render","Build container","Open Source and Container","Analyze JavaScript"]'
           else
-            required='["Test (Node 22)","Test (Node 24)","Lint and audit","Helm lint and render","Build container","Open Source","Analyze JavaScript"]'
+            required='["Test (Node 26)","Lint and audit","Helm lint and render","Build container","Open Source and Container","Analyze JavaScript"]'
           fi
 
           for attempt in {1..60}; do
