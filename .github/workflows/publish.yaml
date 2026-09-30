@@ -92,7 +92,7 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.verify.outputs.sha }}
       - name: Set up QEMU
@@ -135,12 +135,12 @@ jobs:
     if: needs.verify.outputs.branch == 'master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.verify.outputs.sha }}
       - uses: azure/setup-helm@v4
       - name: Check out chart repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: jonfairbanks/helm-charts
           token: ${{ secrets.HELM_CHARTS_PAT }}
