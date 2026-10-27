@@ -89,4 +89,7 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# Optional container lifecycle hooks. Include their duration in the pod grace period.
+lifecycle: {}
+
 terminationGracePeriodSeconds: 30
