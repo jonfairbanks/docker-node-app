@@ -93,3 +93,27 @@ To make 50 requests and write them to a file, you can run the following with you
 ```shell
 for run in {1..50}; do curl -sSL -D - docker-node-app.local -o /dev/null | grep X-Hostname; done
 ```
+
+### Shutdown Coordination
+
+By default, `SIGTERM` and `SIGINT` immediately stop accepting new connections
+and allow active requests up to `SHUTDOWN_TIMEOUT_MS` (25000 milliseconds).
+
+For Kubernetes, set `SHUTDOWN_READINESS_TIMEOUT_MS` to a positive deadline
+(such as 6000 milliseconds) to keep serving normally until the next successful
+`/readyz` response to a `kube-probe/` client finishes. Shutdown then marks the
+app draining and closes the listener. Other clients and unsuccessful readiness
+responses do not release this wait. Readiness still returns 503 while draining;
+liveness and probe thresholds are unchanged.
+
+If no eligible response finishes before the deadline, the app logs the missed
+coordination and starts its normal bounded drain. Allow enough pod termination
+time for any pre-stop hook, this wait, the drain deadline, and a safety margin.
+A five-second pre-stop hook, six-second readiness wait, and 25-second drain
+require a grace period greater than 36 seconds, such as 40 seconds.
+
+This coordinates exit with an observed check to reduce shutdown probe races.
+It does not guarantee zero warnings: kubelet can trigger additional checks,
+active requests can outlast the probe interval, and runtime teardown can be slow.
+The client header identifies kubelet's normal probe format, not authenticated
+identity. It only affects coordination after a shutdown signal.
