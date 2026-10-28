@@ -46,10 +46,6 @@ spec:
               value: production
             - name: TZ
               value: {{ .Values.timezone | quote }}
-            {{- if gt (int .Values.shutdownReadinessTimeoutMs) 0 }}
-            - name: SHUTDOWN_READINESS_TIMEOUT_MS
-              value: {{ .Values.shutdownReadinessTimeoutMs | quote }}
-            {{- end }}
           {{- with .Values.lifecycle }}
           lifecycle:
             {{- toYaml . | nindent 12 }}

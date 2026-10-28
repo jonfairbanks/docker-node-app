@@ -4,11 +4,7 @@ const SHUTDOWN_TIMEOUT_MS = Number.parseInt(
   process.env.SHUTDOWN_TIMEOUT_MS || '25000',
   10,
 );
-const SHUTDOWN_READINESS_TIMEOUT_MS = Number.parseInt(
-  process.env.SHUTDOWN_READINESS_TIMEOUT_MS || '0',
-  10,
-);
-const { app, setDraining, waitForReadinessProbe } = require('./app');
+const { app, setDraining } = require('./app');
 
 function startServer({ port = PORT, host = '0.0.0.0', logger = console } = {}) {
   return app.listen(port, host, () => {
@@ -22,8 +18,6 @@ function createGracefulShutdown(
     timeoutMs = SHUTDOWN_TIMEOUT_MS,
     logger = console,
     onShutdownStart = () => {},
-    readinessTimeoutMs = SHUTDOWN_READINESS_TIMEOUT_MS,
-    waitForReadiness = waitForReadinessProbe,
   } = {},
 ) {
   let shutdownPromise;
@@ -33,18 +27,8 @@ function createGracefulShutdown(
       return shutdownPromise;
     }
 
-    shutdownPromise = Promise.resolve().then(async () => {
-      if (readinessTimeoutMs > 0) {
-        logger.log(`Received ${signal}; serving until the next kubelet readiness probe.`);
-        const observed = await waitForReadiness(readinessTimeoutMs);
-        if (observed) {
-          logger.log('Kubelet readiness response finished; starting drain.');
-        } else {
-          logger.error(`No kubelet readiness response within ${readinessTimeoutMs}ms; starting drain.`);
-        }
-      } else {
-        logger.log(`Received ${signal}; draining active connections...`);
-      }
+    shutdownPromise = Promise.resolve().then(() => {
+      logger.log(`Received ${signal}; draining active connections...`);
       onShutdownStart();
       return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
@@ -76,8 +60,13 @@ if (require.main === module) {
     onShutdownStart: () => setDraining(true),
   });
 
+  let shutdownStarted = false;
   for (const signal of ['SIGTERM', 'SIGINT']) {
     process.on(signal, () => {
+      if (shutdownStarted) {
+        return;
+      }
+      shutdownStarted = true;
       shutdown(signal)
         .then(() => console.log('Graceful shutdown complete.'))
         .catch((error) => {
