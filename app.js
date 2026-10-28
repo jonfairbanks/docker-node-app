@@ -1,12 +1,10 @@
 const express = require('express');
-const { EventEmitter } = require('node:events');
 
 const app = express();
 const os = require('os');
 const dayjs = require('dayjs');
 const advancedFormat = require('dayjs/plugin/advancedFormat');
 let isDraining = false;
-const readinessProbes = new EventEmitter();
 
 app.set('view engine', 'ejs');
 dayjs.extend(advancedFormat);
@@ -58,32 +56,12 @@ app.get('/healthz', (req, res) => {
 // During termination, keep the container alive long enough for in-flight
 // requests to finish, but tell Kubernetes and load balancers not to send it
 // any new requests.
-app.get('/readyz', (req, res) => {
-  if (!isDraining && /^kube-probe\//.test(req.get('User-Agent') || '')) {
-    res.once('finish', () => {
-      if (!isDraining && res.statusCode === 200) {
-        readinessProbes.emit('success');
-      }
-    });
-  }
+app.get('/readyz', (_req, res) => {
   res.sendStatus(isDraining ? 503 : 200);
 });
-
-function waitForReadinessProbe(timeoutMs) {
-  return new Promise((resolve) => {
-    const finish = (observed) => {
-      clearTimeout(timeout);
-      readinessProbes.removeListener('success', onProbe);
-      resolve(observed);
-    };
-    const onProbe = () => finish(true);
-    const timeout = setTimeout(() => finish(false), timeoutMs);
-    readinessProbes.once('success', onProbe);
-  });
-}
 
 function setDraining(value) {
   isDraining = value;
 }
 
-module.exports = { app, setDraining, waitForReadinessProbe };
+module.exports = { app, setDraining };
