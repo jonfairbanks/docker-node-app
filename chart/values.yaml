@@ -92,8 +92,4 @@ affinity: {}
 # Optional container lifecycle hooks. Include their duration in the pod grace period.
 lifecycle: {}
 
-# Wait for a successful kubelet readiness response before closing the listener.
-# Include this bounded wait in terminationGracePeriodSeconds. Zero disables it.
-shutdownReadinessTimeoutMs: 0
-
 terminationGracePeriodSeconds: 30

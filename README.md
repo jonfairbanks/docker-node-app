@@ -96,24 +96,16 @@ for run in {1..50}; do curl -sSL -D - docker-node-app.local -o /dev/null | grep 
 
 ### Shutdown Coordination
 
-By default, `SIGTERM` and `SIGINT` immediately stop accepting new connections
-and allow active requests up to `SHUTDOWN_TIMEOUT_MS` (25000 milliseconds).
+`SIGTERM` and `SIGINT` mark the app draining and stop accepting new connections
+without waiting for a readiness probe. Active requests have up to
+`SHUTDOWN_TIMEOUT_MS` (25000 milliseconds) to finish. Duplicate signals share
+the same drain; exceeding the deadline forces connections closed and exits
+with a nonzero status.
 
-For Kubernetes, set `SHUTDOWN_READINESS_TIMEOUT_MS` to a positive deadline
-(such as 6000 milliseconds) to keep serving normally until the next successful
-`/readyz` response to a `kube-probe/` client finishes. Shutdown then marks the
-app draining and closes the listener. Other clients and unsuccessful readiness
-responses do not release this wait. Readiness still returns 503 while draining;
-liveness and probe thresholds are unchanged.
+Readiness returns 503 while draining. Liveness continues to report the running
+process as healthy while active requests finish.
 
-If no eligible response finishes before the deadline, the app logs the missed
-coordination and starts its normal bounded drain. Allow enough pod termination
-time for any pre-stop hook, this wait, the drain deadline, and a safety margin.
-A five-second pre-stop hook, six-second readiness wait, and 25-second drain
-require a grace period greater than 36 seconds, such as 40 seconds.
-
-This coordinates exit with an observed check to reduce shutdown probe races.
-It does not guarantee zero warnings: kubelet can trigger additional checks,
-active requests can outlast the probe interval, and runtime teardown can be slow.
-The client header identifies kubelet's normal probe format, not authenticated
-identity. It only affects coordination after a shutdown signal.
+Allow enough pod termination time for any pre-stop hook, the drain deadline,
+and a safety margin. A five-second pre-stop hook and 25-second drain fit within
+a 40-second grace period. Configure the hook and grace period through the
+chart's `lifecycle` and `terminationGracePeriodSeconds` values.

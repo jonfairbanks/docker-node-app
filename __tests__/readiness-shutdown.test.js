@@ -2,85 +2,36 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const { once } = require('node:events');
 const { spawn } = require('node:child_process');
+const { mkdtemp, writeFile, rm } = require('node:fs/promises');
+const os = require('node:os');
+const path = require('node:path');
 const { test } = require('node:test');
 const request = require('supertest');
-const { app, setDraining, waitForReadinessProbe } = require('../app');
+const { app, setDraining } = require('../app');
 const { createGracefulShutdown } = require('../index');
 
 const silentLogger = { log() {}, error() {} };
 
 test.afterEach(() => setDraining(false));
 
-test('only a successful kubelet readiness response releases the wait', async () => {
-  let completed = false;
-  const waiting = waitForReadinessProbe(1000).then((observed) => {
-    completed = true;
-    return observed;
-  });
-  assert.equal((await request(app).get('/readyz')).status, 200);
-  assert.equal((await request(app).get('/healthz').set('User-Agent', 'kube-probe/1.35')).status, 200);
-  assert.equal(completed, false);
-
-  setDraining(true);
-  assert.equal((await request(app).get('/readyz').set('User-Agent', 'kube-probe/1.35')).status, 503);
-  assert.equal((await request(app).get('/readyz')).status, 503);
-  assert.equal(completed, false);
-
-  setDraining(false);
-  assert.equal((await request(app).get('/readyz').set('User-Agent', 'kube-probe/1.35')).status, 200);
-  assert.equal(await waiting, true);
-});
-
-test('a missed readiness response times out and leaves no stale wait', async () => {
-  assert.equal(await waitForReadinessProbe(20), false);
-  const waiting = waitForReadinessProbe(1000);
-  await request(app).get('/readyz').set('User-Agent', 'kube-probe/1.35');
-  assert.equal(await waiting, true);
-});
-
-test('shutdown keeps serving until the probe and waits only once', async (t) => {
+test('shutdown starts draining without a kubelet readiness request', async (t) => {
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); server.close(); });
-  let waits = 0;
-  let startWaiting;
-  const started = new Promise((resolve) => { startWaiting = resolve; });
+  assert.equal((await request(server).get('/readyz')).status, 200);
   const shutdown = createGracefulShutdown(server, {
     logger: silentLogger,
-    readinessTimeoutMs: 1000,
-    waitForReadiness: (timeoutMs) => {
-      waits += 1;
-      const waiting = waitForReadinessProbe(timeoutMs);
-      startWaiting();
-      return waiting;
-    },
     onShutdownStart: () => setDraining(true),
   });
-  const shuttingDown = shutdown('SIGTERM');
-  assert.equal(shutdown('SIGTERM'), shuttingDown);
-  await started;
-  assert.equal((await request(server).get('/')).status, 200);
-  assert.equal((await request(server).get('/readyz')).status, 200);
-  assert.equal(server.listening, true);
-  await request(server).get('/readyz').set('User-Agent', 'kube-probe/1.35');
-  await shuttingDown;
-  assert.equal(waits, 1);
+  const stopping = shutdown('SIGTERM');
+  assert.equal(shutdown('SIGINT'), stopping);
+  await new Promise((resolve) => setImmediate(resolve));
   assert.equal(server.listening, false);
-  assert.equal((await request(app).get('/readyz').set('User-Agent', 'kube-probe/1.35')).status, 503);
-});
-
-test('missing probe logs coordination timeout and completes an ordinary drain', async () => {
-  const server = http.createServer((_req, res) => res.end('ok'));
-  server.listen(0, '127.0.0.1');
-  await once(server, 'listening');
-  const errors = [];
-  const shutdown = createGracefulShutdown(server, {
-    readinessTimeoutMs: 20,
-    logger: { log() {}, error: (message) => errors.push(message) },
-  });
-  await shutdown('SIGTERM');
-  assert.equal(server.listening, false);
-  assert.deepEqual(errors, ['No kubelet readiness response within 20ms; starting drain.']);
+  await stopping;
+  for (const userAgent of ['ordinary-client', 'kube-probe/1.35']) {
+    assert.equal((await request(app).get('/readyz').set('User-Agent', userAgent)).status, 503);
+    assert.equal((await request(app).get('/healthz').set('User-Agent', userAgent)).status, 200);
+  }
 });
 
 test('a stalled active request still hits the bounded drain deadline', async (t) => {
@@ -93,8 +44,6 @@ test('a stalled active request still hits the bounded drain deadline', async (t)
   const pendingRequest = fetch(`http://127.0.0.1:${server.address().port}`).catch(() => {});
   await started;
   const shutdown = createGracefulShutdown(server, {
-    readinessTimeoutMs: 100,
-    waitForReadiness: async () => true,
     timeoutMs: 20,
     logger: silentLogger,
   });
@@ -103,89 +52,86 @@ test('a stalled active request still hits the bounded drain deadline', async (t)
   assert.equal(server.listening, false);
 });
 
-test('child survives duplicate SIGTERM while serving and exits after the probe', async (t) => {
-  const reservation = http.createServer();
-  reservation.listen(0, '127.0.0.1');
-  await once(reservation, 'listening');
-  const { port } = reservation.address();
-  await new Promise((resolve) => reservation.close(resolve));
-  const child = spawn(process.execPath, ['index.js'], {
-    cwd: `${__dirname}/..`,
-    env: { ...process.env, PORT: String(port), SHUTDOWN_READINESS_TIMEOUT_MS: '6000' },
+async function startChild(t, timeoutMs) {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'docker-node-app-shutdown-'));
+  const preload = path.join(directory, 'slow-response.cjs');
+  await writeFile(preload, `
+    const { app } = require(${JSON.stringify(path.resolve(__dirname, '../app'))});
+    const listen = app.listen;
+    app.listen = function (...args) {
+      const server = listen.apply(this, args);
+      server.once('listening', () => console.log('Test port: ' + server.address().port));
+      return server;
+    };
+    app.get('/slow', (_req, res) => {
+      res.write('started');
+      setTimeout(() => res.end(' completed'), 1000).unref();
+    });
+  `);
+  const child = spawn(process.execPath, ['--require', preload, 'index.js'], {
+    cwd: path.resolve(__dirname, '..'),
+    env: { ...process.env, PORT: '0', SHUTDOWN_TIMEOUT_MS: String(timeoutMs) },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
-  t.after(() => child.kill('SIGKILL'));
-  let output = '';
-  child.stdout.on('data', (data) => { output += data; });
   const exited = once(child, 'exit');
+  t.after(async () => {
+    if (child.exitCode === null && child.signalCode === null) {
+      child.kill('SIGKILL');
+      await exited;
+    }
+    await rm(directory, { recursive: true, force: true });
+  });
+  let output = '';
+  let errors = '';
+  child.stderr.on('data', (data) => { errors += data; });
+  child.stdout.on('data', (data) => { output += data; });
   const waitForOutput = async (text) => {
     while (!output.includes(text)) {
-      await once(child.stdout, 'data', { signal: AbortSignal.timeout(2000) });
+      await once(child.stdout, 'data', { signal: AbortSignal.timeout(3000) });
     }
   };
-  await waitForOutput('listening on port');
-  child.kill('SIGTERM');
-  await waitForOutput('serving until the next kubelet readiness probe');
-  child.kill('SIGTERM');
-  const root = await fetch(`http://127.0.0.1:${port}/`);
-  assert.equal(root.status, 200);
-  await root.text();
-  const ordinary = await fetch(`http://127.0.0.1:${port}/readyz`);
-  assert.equal(ordinary.status, 200);
-  await ordinary.text();
-  assert.equal(child.exitCode, null);
-  const probe = await fetch(`http://127.0.0.1:${port}/readyz`, {
-    headers: { 'User-Agent': 'kube-probe/1.35' },
+  await waitForOutput('Test port:');
+  const port = Number(output.match(/Test port: (\d+)/)[1]);
+  return { child, exited, port, waitForOutput, output: () => output, errors: () => errors };
+}
+
+async function activeResponse(port) {
+  const response = await fetch(`http://127.0.0.1:${port}/slow`, {
+    headers: { Connection: 'close' },
   });
-  assert.equal(probe.status, 200);
-  await probe.text();
-  const [code, signal] = await Promise.race([
-    exited,
-    new Promise((_, reject) => {
-      const timer = setTimeout(() => reject(new Error('Child did not exit after probe')), 2000);
-      timer.unref();
-      exited.finally(() => clearTimeout(timer));
-    }),
-  ]);
+  const reader = response.body.getReader();
+  assert.equal(new TextDecoder().decode((await reader.read()).value), 'started');
+  return reader;
+}
+
+test('child drains an active response through duplicate SIGTERM and SIGINT', { timeout: 6000 }, async (t) => {
+  const running = await startChild(t, 3000);
+  const reader = await activeResponse(running.port);
+  running.child.kill('SIGTERM');
+  await running.waitForOutput('draining active connections');
+  running.child.kill('SIGTERM');
+  running.child.kill('SIGINT');
+  assert.equal(running.child.exitCode, null);
+  assert.equal(new TextDecoder().decode((await reader.read()).value), ' completed');
+  assert.equal((await reader.read()).done, true);
+  const [code, signal] = await running.exited;
   assert.equal(code, 0);
   assert.equal(signal, null);
-  assert.match(output, /Kubelet readiness response finished; starting drain/);
-  assert.match(output, /Graceful shutdown complete/);
+  assert.equal(running.errors(), '');
+  assert.equal(running.output().match(/draining active connections/g).length, 1);
+  assert.equal(running.output().match(/Graceful shutdown complete/g).length, 1);
 });
 
-test('probe coordination preserves an active response through the drain', async (t) => {
-  let requestStarted;
-  let releaseResponse;
-  const started = new Promise((resolve) => { requestStarted = resolve; });
-  const released = new Promise((resolve) => { releaseResponse = resolve; });
-  const server = http.createServer(async (_req, res) => {
-    requestStarted();
-    await released;
-    res.end('completed');
-  });
-  server.keepAliveTimeout = 10;
-  server.listen(0, '127.0.0.1');
-  await once(server, 'listening');
-  t.after(() => { server.closeAllConnections(); server.close(); });
-  const response = fetch(`http://127.0.0.1:${server.address().port}`);
-  await started;
-  let releaseProbe;
-  const probe = new Promise((resolve) => { releaseProbe = resolve; });
-  const shutdown = createGracefulShutdown(server, {
-    readinessTimeoutMs: 1000,
-    waitForReadiness: () => probe,
-    timeoutMs: 1000,
-    logger: silentLogger,
-  });
-  let completed = false;
-  const stopping = shutdown('SIGTERM').then(() => { completed = true; });
-  releaseProbe(true);
-  await new Promise((resolve) => setImmediate(resolve));
-  assert.equal(server.listening, false);
-  assert.equal(completed, false);
-  assert.equal(shutdown('SIGTERM'), shutdown('SIGINT'));
-  releaseResponse();
-  assert.equal(await (await response).text(), 'completed');
-  await stopping;
-  assert.equal(completed, true);
+test('child exits nonzero when an active response exceeds the drain deadline', { timeout: 6000 }, async (t) => {
+  const running = await startChild(t, 20);
+  const reader = await activeResponse(running.port);
+  running.child.kill('SIGTERM');
+  const remainder = await reader.read().catch(() => ({ done: true }));
+  assert.equal(remainder.done, true);
+  const [code, signal] = await running.exited;
+  assert.equal(code, 1);
+  assert.equal(signal, null);
+  assert.match(running.errors(), /forcing close/);
+  assert.match(running.errors(), /Graceful shutdown timed out/);
+  assert.doesNotMatch(running.output(), /Graceful shutdown complete/);
 });
