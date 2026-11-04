@@ -110,6 +110,30 @@ jobs:
             echo "Release blocked by missing or unsuccessful fresh checks: $missing" >&2
             exit 1
           fi
+          # Dispatch results can pass the freshness gate without satisfying PR protection.
+          ready=false
+          for attempt in {1..60}; do
+            if [ "$(gh pr view "$pr_url" --json headRefOid --jq .headRefOid)" != "$head_sha" ]; then
+              echo "Release PR head changed while waiting for required checks: $pr_url" >&2
+              exit 1
+            fi
+            if checks="$(gh pr checks "$pr_url" --required --json name,state)" &&
+              jq -e --argjson required "$required" '
+                . as $checks
+                | all($required[]; . as $name | any($checks[]; .name == $name))
+                  and all($checks[]; .state == "SUCCESS")
+              ' <<< "$checks" >/dev/null; then
+              ready=true
+              break
+            fi
+            echo "Waiting for passing required PR checks: $pr_url"
+            sleep 10
+          done
+          if [ "$ready" != true ]; then
+            echo "Release blocked by required PR checks: $pr_url" >&2
+            gh pr checks "$pr_url" --required || true
+            exit 1
+          fi
           gh pr merge "$pr_url" --merge --auto --match-head-commit "$head_sha"
           for attempt in {1..30}; do
             if [ "$(gh pr view "$pr_url" --json state --jq .state)" = MERGED ]; then
